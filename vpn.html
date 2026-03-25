@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>NIVA EXCHANGE VPN ZONE</title>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root{
+            --bg-1:#020617;
+            --bg-2:#0b1120;
+            --bg-3:#111827;
+            --panel:rgba(10,16,32,.72);
+            --panel-2:rgba(17,24,39,.86);
+            --stroke:rgba(255,255,255,.08);
+            --text:#e5eefc;
+            --muted:#8fa4c7;
+            --red:#ff2b5b;
+            --red-soft:#ff5c80;
+            --blue:#2563ff;
+            --blue-soft:#51a2ff;
+            --ok:#13d48f;
+            --warn:#ffb020;
+            --danger:#ff5d73;
+            --shadow:0 18px 60px rgba(0,0,0,.42);
+            --grad-main:linear-gradient(135deg,var(--red) 0%, var(--blue) 100%);
+            --grad-panel:linear-gradient(135deg, rgba(255,43,91,.14) 0%, rgba(37,99,255,.14) 100%);
+        }
+
+        *{
+            font-family:'Plus Jakarta Sans',sans-serif;
+            -webkit-tap-highlight-color:transparent;
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        html{
+            scroll-behavior:smooth;
+        }
+
+        body{
+            min-height:100vh;
+            color:var(--text);
+            padding-bottom:110px;
+            overflow-x:hidden;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(255,43,91,.22), transparent 28%),
+                radial-gradient(circle at 85% 10%, rgba(37,99,255,.22), transparent 30%),
+                radial-gradient(circle at 50% 80%, rgba(81,162,255,.12), transparent 32%),
+                linear-gradient(180deg, #07101f 0%, #030712 42%, #000000 100%);
+            position:relative;
+        }
+
+        body::before,
+        body::after{
+            content:"";
+            position:fixed;
+            inset:auto;
+            width:340px;
+            height:340px;
+            border-radius:999px;
+            filter:blur(70px);
+            z-index:-2;
+            animation: floatBlob 12s ease-in-out infinite alternate;
+            opacity:.38;
+            pointer-events:none;
+        }
+
+        body::before{
+            top:-80px;
+            left:-90px;
+            background:rgba(255,43,91,.34);
+        }
+
+        body::after{
+            right:-80px;
+            top:100px;
+            background:rgba(37,99,255,.30);
+            animation-delay:2s;
+        }
+
+        @keyframes floatBlob{
+            0%{ transform:translate3d(0,0,0) scale(1); }
+            50%{ transform:translate3d(28px,18px,0) scale(1.08); }
+            100%{ transform:translate3d(-10px,34px,0) scale(.96); }
+        }
+
+        .bg-grid{
+            position:fixed;
+            inset:0;
+            pointer-events:none;
+            z-index:-1;
+            background-image:
+                linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+            background-size: 36px 36px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,.55), transparent 92%);
+        }
+
+        #loading-screen{
+            position:fixed;
+            inset:0;
+            background:
+                radial-gradient(circle at 50% 20%, rgba(255,43,91,.18), transparent 28%),
+                radial-gradient(circle at 50% 80%, rgba(37,99,255,.20), transparent 30%),
+                #020617;
+            z-index:9999;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            transition:opacity .45s ease;
+        }
+
+        .loader-ring{
+            width:62px;
+            height:62px;
+            border:4px solid rgba(255,255,255,.08);
+            border-top:4px solid var(--red);
+            border-right:4px solid var(--blue);
+            border-radius:50%;
+            animation: spin 1s linear infinite;
+            box-shadow:0 0 28px rgba(255,43,91,.18), 0 0 34px rgba(37,99,255,.16);
+        }
+
+        @keyframes spin{
+            from{ transform:rotate(0deg); }
+            to{ transform:rotate(360deg); }
+        }
+
+        .glass,
+        .card{
+            background:linear-gradient(180deg, rgba(14,22,40,.78), rgba(8,13,27,.92));
+            border:1px solid var(--stroke);
+            box-shadow:var(--shadow);
+            backdrop-filter:blur(18px);
+            -webkit-backdrop-filter:blur(18px);
+            border-radius:24px;
+            position:relative;
+            overflow:hidden;
+        }
+
+        .card{
+            padding:16px;
+        }
+
+        .card::before,
+        .sheet::before,
+        #user-profile-card::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:linear-gradient(135deg, rgba(255,255,255,.08), transparent 35%, transparent 70%, rgba(255,255,255,.04));
+            pointer-events:none;
+        }
+
+        .glow-border{
+            position:relative;
+        }
+
+        .glow-border::after{
+            content:"";
+            position:absolute;
+            inset:-1px;
+            border-radius:inherit;
+            padding:1px;
+            background:linear-gradient(135deg, rgba(255,43,91,.65), rgba(37,99,255,.65));
+            -webkit-mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite:xor;
+                    mask-composite:exclude;
+            opacity:.65;
+            pointer-events:none;
+        }
+
+        .btn-p{
+            width:100%;
+            padding:15px 16px;
+            border-radius:18px;
+            font-weight:800;
+            font-size:14px;
+            color:#fff;
+            background:linear-gradient(135deg, var(--red) 0%, var(--blue) 100%);
+            box-shadow:
+                0 12px 30px rgba(255,43,91,.20),
+                0 12px 28px rgba(37,99,255,.16);
+            transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+            position:relative;
+            overflow:hidden;
+        }
+
+        .btn-p:hover,
+        .btn-p:active{
+            transform:translateY(-1px) scale(.995);
+            filter:brightness(1.04);
+            box-shadow:
+                0 16px 34px rgba(255,43,91,.26),
+                0 16px 34px rgba(37,99,255,.22);
+        }
+
+        .btn-p::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:linear-gradient(120deg, transparent 20%, rgba(255,255,255,.18) 50%, transparent 78%);
+            transform:translateX(-130%);
+            animation:btnShine 3.6s ease-in-out infinite;
+        }
+
+        @keyframes btnShine{
+            0%, 70%, 100%{ transform:translateX(-130%); }
+            85%{ transform:translateX(130%); }
+        }
+
+        .btn-reject{
+            background:rgba(255,93,115,.10);
+            color:#ff7f91;
+            width:100%;
+            padding:12px;
+            border-radius:16px;
+            font-weight:800;
+            font-size:12px;
+            border:1px solid rgba(255,93,115,.18);
+            transition:transform .18s ease, background .18s ease;
+        }
+
+        .btn-reject:hover{ transform:translateY(-1px); background:rgba(255,93,115,.14); }
+
+        .acc-box{
+            background:rgba(255,255,255,.03);
+            border:1px dashed rgba(255,255,255,.10);
+            border-radius:16px;
+            padding:11px 14px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-top:8px;
+            transition:background .18s ease, border-color .18s ease, transform .18s ease;
+        }
+
+        .acc-box:hover{
+            background:rgba(255,255,255,.05);
+            border-color:rgba(37,99,255,.34);
+            transform:translateY(-1px);
+        }
+
+        .acc-label{
+            font-size:9px;
+            font-weight:800;
+            color:var(--muted);
+            text-transform:uppercase;
+            letter-spacing:.75px;
+        }
+
+        .acc-value{
+            font-family:monospace;
+            font-size:11px;
+            font-weight:700;
+            color:var(--text);
+        }
+
+        .adm-nav{
+            display:flex;
+            background:rgba(255,255,255,.035);
+            border:1px solid rgba(255,255,255,.06);
+            padding:5px;
+            border-radius:18px;
+            margin-bottom:15px;
+            gap:4px;
+            overflow-x:auto;
+        }
+
+        .adm-tab{
+            flex:1;
+            min-width:96px;
+            padding:12px 8px;
+            font-size:10px;
+            font-weight:800;
+            color:var(--muted);
+            border-radius:14px;
+            text-align:center;
+            white-space:nowrap;
+            transition:all .18s ease;
+        }
+
+        .adm-tab-active{
+            background:linear-gradient(135deg, rgba(255,43,91,.18), rgba(37,99,255,.20));
+            color:#fff;
+            box-shadow:0 10px 22px rgba(0,0,0,.22);
+            border:1px solid rgba(255,255,255,.06);
+        }
+
+        .modal{
+            position:fixed;
+            inset:0;
+            background:rgba(2,8,23,.70);
+            backdrop-filter:blur(10px);
+            z-index:6000;
+            display:none;
+            align-items:flex-end;
+            justify-content:center;
+            padding:0 10px;
+        }
+
+        .sheet{
+            background:linear-gradient(180deg, rgba(11,17,32,.95), rgba(3,7,18,.98));
+            width:100%;
+            max-width:450px;
+            border-radius:30px 30px 0 0;
+            padding:26px 22px 24px;
+            animation:slideUp .28s ease;
+            max-height:85vh;
+            overflow-y:auto;
+            border:1px solid rgba(255,255,255,.08);
+            box-shadow:0 20px 60px rgba(0,0,0,.45);
+            position:relative;
+            overflow-x:hidden;
+        }
+
+        @keyframes slideUp{
+            from{ transform:translateY(100%); opacity:0; }
+            to{ transform:translateY(0); opacity:1; }
+        }
+
+        .adm-mini-input,
+        #trx-id{
+            width:100%;
+            background:rgba(255,255,255,.03);
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:14px;
+            padding:12px 12px;
+            font-size:11px;
+            font-weight:700;
+            outline:none;
+            color:var(--text);
+            transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .adm-mini-input::placeholder,
+        #trx-id::placeholder{
+            color:#6f86ad;
+        }
+
+        .adm-mini-input:focus,
+        #trx-id:focus{
+            border-color:rgba(37,99,255,.45);
+            box-shadow:0 0 0 4px rgba(37,99,255,.12);
+            background:rgba(255,255,255,.04);
+        }
+
+        select.adm-mini-input{
+            appearance:none;
+        }
+
+        .vpn-img{
+            width:50px;
+            height:50px;
+            border-radius:16px;
+            object-fit:cover;
+            background:rgba(255,255,255,.05);
+            border:1px solid rgba(255,255,255,.10);
+            box-shadow:0 6px 18px rgba(0,0,0,.22);
+        }
+
+        .disabled-card{
+            opacity:.45;
+            pointer-events:none;
+            filter:grayscale(.4);
+        }
+
+        .switch{
+            position:relative;
+            display:inline-block;
+            width:38px;
+            height:22px;
+        }
+
+        .switch input{
+            opacity:0;
+            width:0;
+            height:0;
+        }
+
+        .slider{
+            position:absolute;
+            cursor:pointer;
+            inset:0;
+            background-color:#334155;
+            transition:.35s;
+            border-radius:999px;
+            border:1px solid rgba(255,255,255,.08);
+        }
+
+        .slider:before{
+            position:absolute;
+            content:"";
+            height:16px;
+            width:16px;
+            left:2px;
+            bottom:2px;
+            background:linear-gradient(135deg, #fff, #cbd5e1);
+            transition:.35s;
+            border-radius:50%;
+            box-shadow:0 4px 12px rgba(0,0,0,.28);
+        }
+
+        input:checked + .slider{
+            background:linear-gradient(135deg, rgba(255,43,91,.70), rgba(37,99,255,.72));
+        }
+
+        input:checked + .slider:before{
+            transform:translateX(16px);
+        }
+
+        .header-brand{
+            position:relative;
+            display:inline-flex;
+            align-items:center;
+            gap:2px;
+            text-shadow:0 0 18px rgba(37,99,255,.16);
+        }
+
+        .brand-accent{
+            background:linear-gradient(135deg, var(--red), var(--blue));
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+        }
+
+        #user-profile-card{
+            border:none;
+            padding:24px;
+            background:
+                radial-gradient(circle at top right, rgba(255,255,255,.12), transparent 26%),
+                linear-gradient(135deg, rgba(255,43,91,.78) 0%, rgba(37,99,255,.78) 100%);
+            box-shadow:
+                0 22px 55px rgba(255,43,91,.18),
+                0 20px 60px rgba(37,99,255,.16);
+        }
+
+        #user-profile-card::after{
+            content:"";
+            position:absolute;
+            inset:auto -40px -40px auto;
+            width:160px;
+            height:160px;
+            border-radius:50%;
+            background:radial-gradient(circle, rgba(255,255,255,.18), transparent 62%);
+            animation:pulseOrb 4.2s ease-in-out infinite;
+            pointer-events:none;
+        }
+
+        @keyframes pulseOrb{
+            0%,100%{ transform:scale(1); opacity:.8; }
+            50%{ transform:scale(1.15); opacity:.45; }
+        }
+
+        .soft-badge{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:7px 10px;
+            border-radius:999px;
+            background:rgba(255,255,255,.06);
+            border:1px solid rgba(255,255,255,.08);
+            font-size:10px;
+            font-weight:800;
+        }
+
+        .status-dot{
+            width:7px;
+            height:7px;
+            border-radius:999px;
+            background:#fff;
+            box-shadow:0 0 12px rgba(255,255,255,.55);
+        }
+
+        #p-count-badge{
+            box-shadow:0 10px 22px rgba(255,43,91,.28);
+            background:linear-gradient(135deg, var(--red), #ff6b86);
+        }
+
+        .store-card{
+            transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+        }
+
+        .store-card:hover{
+            transform:translateY(-2px);
+            border-color:rgba(37,99,255,.25);
+            box-shadow:0 18px 38px rgba(0,0,0,.38);
+        }
+
+        .online-badge{
+            background:rgba(19,212,143,.10);
+            color:#4bf3bb;
+        }
+
+        .offline-badge{
+            background:rgba(255,93,115,.12);
+            color:#ff8fa0;
+        }
+
+        .nav-shell{
+            position:fixed;
+            left:50%;
+            transform:translateX(-50%);
+            bottom:12px;
+            width:calc(100% - 22px);
+            max-width:430px;
+            background:rgba(7,12,25,.78);
+            backdrop-filter:blur(18px);
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:24px;
+            box-shadow:0 18px 45px rgba(0,0,0,.35);
+            z-index:1000;
+            overflow:hidden;
+        }
+
+        .nav-shell::before{
+            content:"";
+            position:absolute;
+            left:0; right:0; top:0;
+            height:1px;
+            background:linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
+        }
+
+        .nav-btn{
+            color:#7f95b9;
+            transition:transform .18s ease, color .18s ease;
+        }
+
+        .nav-btn.active,
+        .nav-btn.text-indigo-600{
+            color:#fff !important;
+        }
+
+        .nav-btn.active i,
+        .nav-btn.text-indigo-600 i{
+            background:linear-gradient(135deg, var(--red), var(--blue));
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            transform:translateY(-1px);
+        }
+
+        .nav-btn:hover{
+            transform:translateY(-1px);
+        }
+
+        #admin-panel{
+            background:linear-gradient(180deg, #07101d 0%, #030712 100%);
+        }
+
+        .admin-topbar{
+            background:rgba(6,12,24,.88);
+            backdrop-filter:blur(18px);
+            border-bottom:1px solid rgba(255,255,255,.08);
+        }
+
+        .mini-icon-btn{
+            width:40px;
+            height:40px;
+            background:rgba(255,255,255,.05);
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:50%;
+            color:#fff;
+        }
+
+        .pay-choice{
+            background:rgba(255,255,255,.03);
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:18px;
+            transition:all .18s ease;
+        }
+
+        .pay-choice:hover{
+            transform:translateY(-1px);
+            border-color:rgba(37,99,255,.32);
+            background:rgba(255,255,255,.05);
+        }
+
+        .price-chip{
+            display:inline-flex;
+            align-items:center;
+            gap:7px;
+            padding:8px 12px;
+            border-radius:999px;
+            background:rgba(255,255,255,.05);
+            border:1px solid rgba(255,255,255,.08);
+            font-size:11px;
+            font-weight:800;
+        }
+
+        .section-title{
+            font-size:11px;
+            text-transform:uppercase;
+            letter-spacing:.9px;
+            color:#8ca3cb;
+            font-weight:800;
+        }
+
+        hr{
+            border:none;
+            border-top:1px solid rgba(255,255,255,.08);
+        }
+
+        .text-slate-400{ color:#8fa4c7 !important; }
+        .text-indigo-600{ color:#fff !important; }
+        .bg-white\/80{ background:transparent !important; }
+        .bg-white{ background:transparent !important; }
+        .bg-slate-50{ background:rgba(255,255,255,.03) !important; }
+        .bg-indigo-50{ background:rgba(37,99,255,.12) !important; }
+        .text-indigo-500,.text-indigo-600,.text-indigo-700,.text-indigo-400{ color:#8cb8ff !important; }
+        .text-rose-500{ color:#ff879a !important; }
+        .border-t,.border-b,.border{ border-color:rgba(255,255,255,.08) !important; }
+
+        @media (max-width: 420px){
+            .card{ border-radius:20px; }
+            .sheet{ padding:22px 18px 20px; }
+            .nav-shell{ width:calc(100% - 16px); bottom:8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <div id="loading-screen">
+        <div class="loader-ring"></div>
+        <p class="mt-4 font-bold text-slate-400 text-sm tracking-widest animate-pulse uppercase">NIVA EXCHANGE VPN ZONE</p>
+    </div>
+
+    <div class="max-w-md mx-auto relative">
+        <header class="p-6 flex justify-between items-center">
+            <h1 class="font-black text-2xl tracking-tighter italic header-brand">
+                NIVA EXCHANGE<span class="brand-accent">VPN-ZONE</span>
+            </h1>
+            <div class="flex items-center gap-2">
+                <button onclick="goBack()" class="mini-icon-btn" aria-label="Go back to home page">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div id="p-count-badge" class="hidden text-white text-[10px] font-black px-2 py-1 rounded-full animate-bounce">0</div>
+            </div>
+        </header>
+
+        <main class="p-5 space-y-5">
+            <div id="user-profile-card" class="glass p-7 text-white">
+                <div class="flex items-center justify-between gap-3 mb-5">
+                    <div class="soft-badge">
+                        <span class="status-dot"></span>
+                        LIVE DASHBOARD
+                    </div>
+                    <div class="price-chip">---</div>
+                </div>
+                <div class="flex items-center gap-5">
+                    <img id="u-pic" class="w-16 h-16 rounded-[22px] border border-white/20 shadow-lg" src="" alt="User photo">
+                    <div>
+                        <h2 id="u-nickname" class="text-xl font-black tracking-tight">...</h2>
+                        <p id="display-uid" class="text-[10px] font-bold opacity-80 tracking-widest mt-1 uppercase"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="store-page" class="page-content space-y-4">
+                <div id="vpn-list" class="space-y-3"></div>
+            </div>
+
+            <div id="history-page" class="page-content hidden space-y-3">
+                <h3 class="font-black text-lg mb-2">My Orders</h3>
+                <div id="user-orders" class="space-y-3"></div>
+            </div>
+
+            <div id="help-page" class="page-content hidden text-center card py-12 glow-border">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style="background:rgba(37,99,255,.10); border:1px solid rgba(255,255,255,.08);">
+                    <i class="fa-brands fa-telegram text-5xl text-indigo-500"></i>
+                </div>
+                <h4 class="font-black text-xl">Contact Support</h4>
+                <p class="text-[12px] text-slate-400 mt-2">Need help with account delivery, payment, or stock issues?</p>
+                <a id="support-link" href="#" target="_blank" class="btn-p block mt-8">Message Admin</a>
+            </div>
+        </main>
+
+        <nav class="nav-shell h-20 flex justify-around items-center">
+            <button onclick="nav('store', this)" class="nav-btn active flex flex-col items-center gap-1 font-bold text-[10px]">
+                <i class="fa-solid fa-store text-xl"></i>Store
+            </button>
+            <button onclick="nav('history', this)" class="nav-btn flex flex-col items-center gap-1 font-bold text-[10px]">
+                <i class="fa-solid fa-box text-xl"></i>Orders
+            </button>
+            <button onclick="nav('help', this)" class="nav-btn flex flex-col items-center gap-1 font-bold text-[10px]">
+                <i class="fa-solid fa-headset text-xl"></i>Help
+            </button>
+            <button id="admin-btn-nav" onclick="openAdmin()" class="hidden nav-btn flex flex-col items-center gap-1 font-bold text-[10px]">
+                <i class="fa-solid fa-user-shield text-xl"></i>Admin
+            </button>
+        </nav>
+    </div>
+
+    <div id="admin-panel" class="fixed inset-0 z-[5000] hidden flex flex-col">
+        <div class="p-6 flex justify-between items-center admin-topbar">
+            <h2 class="font-black text-xl">Admin Control</h2>
+            <button onclick="closeAdmin()" class="mini-icon-btn font-bold">&times;</button>
+        </div>
+        <div class="p-4 admin-topbar">
+            <div class="adm-nav">
+                <button onclick="admTab('pending', this)" class="adm-tab adm-tab-active">PENDING (<span id="p-count">0</span>)</button>
+                <button onclick="admTab('stock', this)" class="adm-tab">STOCK MGMT</button>
+                <button onclick="admTab('settings', this)" class="adm-tab">VPN MGMT</button>
+            </div>
+        </div>
+        <div class="p-5 overflow-y-auto flex-1 pb-24">
+            <div id="adm-pending" class="adm-content space-y-4"></div>
+
+            <div id="adm-stock" class="adm-content hidden space-y-6">
+                <div class="card glow-border space-y-3">
+                    <b class="section-title">Add to Stock</b>
+                    <input type="text" id="stock-email" placeholder="Email / ID" class="adm-mini-input">
+                    <input type="text" id="stock-pass" placeholder="Password" class="adm-mini-input">
+                    <select id="stock-vpn-id" class="adm-mini-input"></select>
+                    <button onclick="addStock()" class="btn-p py-3 text-xs">Save Stock</button>
+                </div>
+                <div id="stock-inventory-list" class="space-y-3"></div>
+            </div>
+
+            <div id="adm-settings" class="adm-content hidden space-y-6">
+                <div class="card glow-border space-y-3">
+                    <b class="section-title">General Settings</b>
+                    <input type="text" id="set-support-url" placeholder="Support Telegram Link" class="adm-mini-input">
+                    <button onclick="saveSupport()" class="btn-p py-2 text-xs">Save Link</button>
+                    <hr>
+                    <div class="flex gap-2">
+                        <input type="text" id="pay-name" placeholder="Bkash" class="w-1/2 adm-mini-input">
+                        <input type="text" id="pay-num-in" placeholder="Number" class="w-1/2 adm-mini-input">
+                    </div>
+                    <button onclick="addPay()" class="btn-p py-2 text-xs">Add Method</button>
+                    <div id="pay-list" class="space-y-2 mt-2"></div>
+                </div>
+
+                <div class="card glow-border space-y-3">
+                    <input type="text" id="v-name" placeholder="VPN Brand Name" class="adm-mini-input">
+                    <button onclick="addVpn()" class="btn-p py-3 text-xs">Create VPN Brand</button>
+                </div>
+
+                <div id="adm-vpn-list" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="plan-modal" class="modal"><div class="sheet" id="plan-content"></div></div>
+    <div id="stock-select-modal" class="modal"><div class="sheet" id="stock-select-content"></div></div>
+
+    <div id="pay-modal" class="modal">
+        <div class="sheet text-center">
+            <h3 class="font-black text-xl mb-6">Payment</h3>
+            <div id="user-pay-options" class="grid grid-cols-2 gap-3 mb-6"></div>
+            <div id="pay-details" class="hidden">
+                <div class="p-6 rounded-3xl mb-4 pay-choice" onclick="copyText(document.getElementById('active-num').innerText)">
+                    <b id="active-num" class="text-2xl text-indigo-700"></b>
+                </div>
+                <b id="target-price" class="text-xl block mb-6 text-indigo-600"></b>
+                <input type="text" id="trx-id" placeholder="Transaction ID" class="text-center uppercase mb-4">
+                <button onclick="orderNow()" class="btn-p">Confirm Order</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, push, remove, update, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+             apiKey: "AIzaSyDSrCs17N213vY9iYjE3sPXUhHbfMv9dFs",
+  authDomain: "niva-exchange-vpn.firebaseapp.com",
+  databaseURL: "https://niva-exchange-vpn-default-rtdb.firebaseio.com",
+  projectId: "niva-exchange-vpn",
+  storageBucket: "niva-exchange-vpn.firebasestorage.app",
+  messagingSenderId: "703189182461",
+  appId: "1:703189182461:web:c13668acc40db5e09d5b94",
+  measurementId: "G-HR09BNDTED"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const tg = window.Telegram?.WebApp || null;
+        if (tg && tg.expand) tg.expand();
+
+        const UID = tg?.initDataUnsafe?.user?.id || "0000";
+        const UNAME = tg?.initDataUnsafe?.user?.first_name || "Guest";
+        const ADMINS = ["8505710811", "7940769450"];
+
+        window.onload = () => {
+            document.getElementById('u-nickname').innerText = UNAME;
+            document.getElementById('display-uid').innerText = "ID: " + UID;
+            document.getElementById('u-pic').src =
+                tg?.initDataUnsafe?.user?.photo_url ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(UNAME)}&background=111827&color=ffffff`;
+
+            if (ADMINS.includes(UID.toString())) {
+                document.getElementById('admin-btn-nav').classList.remove('hidden');
+            }
+
+            sync();
+
+            setTimeout(() => {
+                const loader = document.getElementById('loading-screen');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 450);
+            }, 1100);
+        };
+
+        function getVpnLogo(vName) {
+            const domain = vName.toLowerCase().replace(/\s/g, '') + ".com";
+            return `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
+        }
+
+        function sync() {
+            onValue(ref(db, 'supportUrl'), (s) => {
+                document.getElementById('support-link').href = s.val() || "#";
+            });
+
+            onValue(ref(db, 'vpns'), (s) => {
+                const uBox = document.getElementById('vpn-list');
+                const aBox = document.getElementById('adm-vpn-list');
+                const sSelect = document.getElementById('stock-vpn-id');
+                const sInv = document.getElementById('stock-inventory-list');
+
+                uBox.innerHTML = '';
+                aBox.innerHTML = '';
+                sSelect.innerHTML = '';
+                sInv.innerHTML = '';
+
+                const d = s.val();
+                if (d) Object.keys(d).forEach(id => {
+                    const v = d[id];
+                    const count = v.stock ? Object.keys(v.stock).length : 0;
+                    const isOff = v.status === "OFF";
+                    const logo = getVpnLogo(v.name);
+
+                    uBox.innerHTML += `
+                        <div onclick="${!isOff ? `openPlans('${id}')` : ''}" class="card glow-border store-card flex justify-between items-center ${isOff ? 'disabled-card' : ''}">
+                            <div class="flex items-center gap-4">
+                                <img src="${logo}" class="vpn-img" alt="${v.name} logo">
+                                <div>
+                                    <b class="block">${v.name}</b>
+                                    <span class="text-[10px] text-slate-400">Stock: ${count}</span>
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-black px-3 py-1.5 rounded-lg ${!isOff ? 'online-badge' : 'offline-badge'}">
+                                ${isOff ? 'OFFLINE' : 'ONLINE'}
+                            </span>
+                        </div>`;
+
+                    aBox.innerHTML += `
+                        <div class="card glow-border space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <img src="${logo}" class="w-8 h-8 rounded-lg" alt="${v.name} icon">
+                                    <b>${v.name}</b>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <label class="switch">
+                                        <input type="checkbox" ${!isOff ? 'checked' : ''} onchange="toggleV('${id}', this.checked)">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <i onclick="delV('${id}')" class="fa-solid fa-trash text-rose-300 cursor-pointer"></i>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="p1n-${id}" value="${v.p1n || ''}" placeholder="Plan 1" class="adm-mini-input">
+                                <input type="number" id="p1p-${id}" value="${v.p1p || ''}" placeholder="Price" class="adm-mini-input">
+                                <input type="text" id="p2n-${id}" value="${v.p2n || ''}" placeholder="Plan 2" class="adm-mini-input">
+                                <input type="number" id="p2p-${id}" value="${v.p2p || ''}" placeholder="Price" class="adm-mini-input">
+                            </div>
+                            <button onclick="saveV('${id}')" class="btn-p py-2.5 text-[10px]">Update Configuration</button>
+                        </div>`;
+
+                    sSelect.innerHTML += `<option value="${id}">${v.name}</option>`;
+
+                    if (v.stock) {
+                        let inv = `<div class="card space-y-2"><b class="section-title">${v.name} Stock</b>`;
+                        Object.keys(v.stock).forEach(sk => {
+                            inv += `
+                                <div class="flex justify-between items-center text-[10px] p-3 rounded-xl bg-slate-50">
+                                    <span>${v.stock[sk].email}</span>
+                                    <i onclick="delStockItem('${id}','${sk}')" class="fa-solid fa-times text-rose-400 cursor-pointer"></i>
+                                </div>`;
+                        });
+                        inv += `</div>`;
+                        sInv.innerHTML += inv;
+                    }
+                });
+            });
+
+            onValue(ref(db, 'orders'), (s) => {
+                const aP = document.getElementById('adm-pending');
+                const uBox = document.getElementById('user-orders');
+
+                aP.innerHTML = '';
+                uBox.innerHTML = '';
+
+                let pCount = 0;
+                const d = s.val();
+
+                if (d) Object.keys(d).forEach(id => {
+                    const o = d[id];
+
+                    if (o.st === "Pending") {
+                        pCount++;
+                        aP.innerHTML += `
+                            <div class="card glow-border space-y-3">
+                                <div class="flex justify-between gap-3">
+                                    <b>${o.user}</b>
+                                    <span class="text-[10px] font-bold text-indigo-600">${o.method}: ${o.trx}</span>
+                                </div>
+                                <p class="text-[10px] text-slate-400">${o.vpn} (${o.plan}) - ${o.date || ''}</p>
+                                <div class="flex gap-2">
+                                    <button onclick="showStockList('${id}','${o.vpn_id}')" class="btn-p py-3 text-[10px]">Deliver</button>
+                                    <button onclick="rejectOrder('${id}')" class="btn-reject">Reject</button>
+                                </div>
+                            </div>`;
+                    }
+
+                    if (o.uid == UID) {
+                        let stColor = o.st === "Approved"
+                            ? "background:rgba(19,212,143,.12); color:#4bf3bb;"
+                            : (o.st === "Rejected"
+                                ? "background:rgba(255,93,115,.12); color:#ff98a7;"
+                                : "background:rgba(37,99,255,.14); color:#8cb8ff;");
+
+                        uBox.innerHTML += `
+                            <div class="card glow-border space-y-2">
+                                <div class="flex justify-between items-start gap-3">
+                                    <div>
+                                        <b class="text-sm">${o.vpn}</b>
+                                        <p class="text-[9px] text-slate-400 mt-1">${o.date || ''}</p>
+                                    </div>
+                                    <span class="text-[10px] font-bold px-2 py-1 rounded" style="${stColor}">${o.st}</span>
+                                </div>
+
+                                ${o.email ? `
+                                <div class="mt-3 space-y-2">
+                                    <div class="acc-box" onclick="copyText('${o.email}')">
+                                        <div class="flex flex-col">
+                                            <span class="acc-label">Email / ID</span>
+                                            <span class="acc-value">${o.email}</span>
+                                        </div>
+                                        <i class="fa-regular fa-copy text-indigo-400 text-xs"></i>
+                                    </div>
+                                    <div class="acc-box" onclick="copyText('${o.pass}')">
+                                        <div class="flex flex-col">
+                                            <span class="acc-label">Password</span>
+                                            <span class="acc-value">${o.pass}</span>
+                                        </div>
+                                        <i class="fa-regular fa-copy text-indigo-400 text-xs"></i>
+                                    </div>
+                                </div>` : ''}
+
+                                ${o.st === "Rejected" ? `<p class="text-[9px] text-rose-500 font-bold italic mt-2">Order was rejected by admin.</p>` : ''}
+                            </div>`;
+                    }
+                });
+
+                document.getElementById('p-count').innerText = pCount;
+
+                const badge = document.getElementById('p-count-badge');
+                badge.innerText = pCount;
+                badge.className = pCount > 0
+                    ? 'text-white text-[10px] font-black px-2 py-1 rounded-full animate-bounce'
+                    : 'hidden';
+            });
+
+            onValue(ref(db, 'payments'), (s) => {
+                const uP = document.getElementById('user-pay-options');
+                const pL = document.getElementById('pay-list');
+
+                uP.innerHTML = '';
+                pL.innerHTML = '';
+
+                const d = s.val();
+                if (d) Object.keys(d).forEach(id => {
+                    uP.innerHTML += `
+                        <div onclick="setPay('${d[id].name}','${d[id].num}')" class="pay-choice p-4 text-[10px] font-black text-center uppercase cursor-pointer">
+                            ${d[id].name}
+                        </div>`;
+
+                    pL.innerHTML += `
+                        <div class="flex justify-between text-[10px] p-3 bg-slate-50 rounded-xl">
+                            <span>${d[id].name} (${d[id].num})</span>
+                            <i onclick="delPay('${id}')" class="fa-solid fa-times cursor-pointer"></i>
+                        </div>`;
+                });
+            });
+        }
+
+        window.goBack = () => {
+            window.location.href = 'index.html';
+        };
+
+        window.nav = (pageId, btn) => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId + '-page').classList.remove('hidden');
+        };
+
+        window.rejectOrder = (id) => {
+            Swal.fire({
+                title: 'Reject Order?',
+                text: 'User will see this order as rejected.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff2b5b',
+                background: '#0b1120',
+                color: '#e5eefc',
+                confirmButtonText: 'Yes, Reject'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    update(ref(db, `orders/${id}`), { st: "Rejected" }).then(() => Swal.fire({
+                        title:'Rejected!',
+                        icon:'success',
+                        background:'#0b1120',
+                        color:'#e5eefc'
+                    }));
+                }
+            });
+        };
+
+        window.saveV = (id) => update(ref(db, `vpns/${id}`), {
+            p1n: document.getElementById(`p1n-${id}`).value,
+            p1p: document.getElementById(`p1p-${id}`).value,
+            p2n: document.getElementById(`p2n-${id}`).value,
+            p2p: document.getElementById(`p2p-${id}`).value
+        }).then(() => Swal.fire({
+            title:'Updated',
+            icon:'success',
+            background:'#0b1120',
+            color:'#e5eefc'
+        }));
+
+        window.addStock = () => {
+            const e = document.getElementById('stock-email').value;
+            const p = document.getElementById('stock-pass').value;
+            const vid = document.getElementById('stock-vpn-id').value;
+
+            if (e && p) {
+                push(ref(db, `vpns/${vid}/stock`), { email: e, pass: p }).then(() => {
+                    document.getElementById('stock-email').value = '';
+                    document.getElementById('stock-pass').value = '';
+                    Swal.fire({
+                        title:'Stock Added',
+                        icon:'success',
+                        toast:true,
+                        timer:1500,
+                        showConfirmButton:false,
+                        background:'#0b1120',
+                        color:'#e5eefc',
+                        position:'top-end'
+                    });
+                });
+            }
+        };
+
+        let curV, curPl, curPr, curVid, curMethod;
+
+        window.openPlans = (id) => {
+            get(ref(db, `vpns/${id}`)).then(s => {
+                const v = s.val();
+                curV = v.name;
+                curVid = id;
+
+                let h = `
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-3">
+                            <img src="${getVpnLogo(v.name)}" class="w-10 h-10 rounded-lg" alt="${v.name}">
+                            <h3 class="font-black text-xl">${v.name}</h3>
+                        </div>
+                        <button onclick="this.closest('.modal').style.display='none'" class="mini-icon-btn">&times;</button>
+                    </div>`;
+
+                if (v.p1n) {
+                    h += `
+                        <div onclick="goPay('${v.p1n}','${v.p1p}')" class="card glow-border mb-3 p-5 flex justify-between items-center cursor-pointer">
+                            <span>${v.p1n}</span>
+                            <b class="text-indigo-600">৳${v.p1p}</b>
+                        </div>`;
+                }
+
+                if (v.p2n) {
+                    h += `
+                        <div onclick="goPay('${v.p2n}','${v.p2p}')" class="card glow-border mb-3 p-5 flex justify-between items-center cursor-pointer">
+                            <span>${v.p2n}</span>
+                            <b class="text-indigo-600">৳${v.p2p}</b>
+                        </div>`;
+                }
+
+                document.getElementById('plan-content').innerHTML = h;
+                document.getElementById('plan-modal').style.display = 'flex';
+            });
+        };
+
+        window.goPay = (n, p) => {
+            curPl = n;
+            curPr = p;
+            document.getElementById('plan-modal').style.display = 'none';
+            document.getElementById('pay-modal').style.display = 'flex';
+            document.getElementById('target-price').innerText = "Price: ৳" + p;
+        };
+
+        window.setPay = (n, m) => {
+            curMethod = n;
+            document.getElementById('active-num').innerText = m;
+            document.getElementById('pay-details').classList.remove('hidden');
+        };
+
+        window.orderNow = () => {
+            const trx = document.getElementById('trx-id').value;
+            if (!trx) return;
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            push(ref(db, 'orders'), {
+                vpn: curV,
+                vpn_id: curVid,
+                plan: curPl,
+                price: curPr,
+                trx: trx.toUpperCase(),
+                method: curMethod,
+                uid: UID,
+                user: UNAME,
+                st: "Pending",
+                date: dateStr
+            }).then(() => {
+                Swal.fire({
+                    title:'Order Sent',
+                    icon:'success',
+                    background:'#0b1120',
+                    color:'#e5eefc'
+                });
+                document.getElementById('pay-modal').style.display = 'none';
+                document.getElementById('trx-id').value = '';
+                document.getElementById('pay-details').classList.add('hidden');
+            });
+        };
+
+        window.showStockList = async (orderId, vpnId) => {
+            const snap = await get(ref(db, `vpns/${vpnId}/stock`));
+            const content = document.getElementById('stock-select-content');
+
+            let h = `
+                <div class="mb-4 font-bold flex justify-between items-center">
+                    <span>Select Account</span>
+                    <button onclick="this.closest('.modal').style.display='none'" class="mini-icon-btn">&times;</button>
+                </div>`;
+
+            if (snap.exists()) {
+                Object.keys(snap.val()).forEach(sk => {
+                    h += `
+                        <button class="w-full text-left p-4 bg-slate-50 mb-2 rounded-xl font-bold text-xs" onclick="approveSelected('${orderId}','${vpnId}','${sk}')">
+                            ${snap.val()[sk].email}
+                        </button>`;
+                });
+            } else {
+                h += `<p class="text-rose-500">Stock empty!</p>`;
+            }
+
+            content.innerHTML = h;
+            document.getElementById('stock-select-modal').style.display = 'flex';
+        };
+
+        window.approveSelected = async (orderId, vpnId, stockKey) => {
+            const snap = await get(ref(db, `vpns/${vpnId}/stock/${stockKey}`));
+            update(ref(db, `orders/${orderId}`), {
+                st: "Approved",
+                email: snap.val().email,
+                pass: snap.val().pass
+            }).then(() => {
+                remove(ref(db, `vpns/${vpnId}/stock/${stockKey}`));
+                document.getElementById('stock-select-modal').style.display = 'none';
+                Swal.fire({
+                    title:'Delivered!',
+                    icon:'success',
+                    background:'#0b1120',
+                    color:'#e5eefc'
+                });
+            });
+        };
+
+        window.toggleV = (id, val) => update(ref(db, `vpns/${id}`), { status: val ? "ON" : "OFF" });
+        window.saveSupport = () => set(ref(db, 'supportUrl'), document.getElementById('set-support-url').value);
+        window.addPay = () => {
+            const n = document.getElementById('pay-name').value;
+            const m = document.getElementById('pay-num-in').value;
+            if (n && m) push(ref(db, 'payments'), { name: n, num: m });
+        };
+        window.delPay = (id) => remove(ref(db, `payments/${id}`));
+        window.addVpn = () => {
+            const n = document.getElementById('v-name').value;
+            if (n) push(ref(db, 'vpns'), { name: n, status: "ON" });
+            document.getElementById('v-name').value = '';
+        };
+        window.delV = (id) => remove(ref(db, `vpns/${id}`));
+        window.delStockItem = (vid, skey) => remove(ref(db, `vpns/${vid}/stock/${skey}`));
+
+        window.admTab = (t, btn) => {
+            document.querySelectorAll('.adm-tab').forEach(b => b.classList.remove('adm-tab-active'));
+            btn.classList.add('adm-tab-active');
+            document.querySelectorAll('.adm-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById('adm-' + t).classList.remove('hidden');
+        };
+
+        window.openAdmin = () => document.getElementById('admin-panel').classList.remove('hidden');
+        window.closeAdmin = () => document.getElementById('admin-panel').classList.add('hidden');
+
+        window.copyText = (t) => {
+            navigator.clipboard.writeText(t);
+            Swal.fire({
+                title:'Copied',
+                icon:'success',
+                toast:true,
+                timer:1000,
+                showConfirmButton:false,
+                background:'#0b1120',
+                color:'#e5eefc',
+                position:'top-end'
+            });
+        };
+
+        window.onclick = (e) => {
+            ['plan-modal', 'stock-select-modal', 'pay-modal'].forEach(id => {
+                const modal = document.getElementById(id);
+                if (e.target === modal) modal.style.display = 'none';
+            });
+        };
+    </script>
+</body>
+</html>
