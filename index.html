@@ -697,7 +697,7 @@
         <span>❯</span>
       </a>
 
-      <a href="vpn.html" id="vpn-store-link" class="action-card glass" onclick="openVpnStore(event)">
+      <a href="./vpn.html" id="vpn-store-link" class="action-card glass" onclick="return openVpnStore(event)">
         <div class="left-wrap">
           <div class="icon-box">🛡️</div>
           <div>
@@ -1118,14 +1118,8 @@ apiKey: "AIzaSyDMPXsRLChUaHlpIRHwm6PH4uYxR21stO4",
     function openVpnStore(event) {
       if (event) event.preventDefault();
       safeHaptic('impact', 'light');
-      const targetUrl = 'vpn.html';
-      try {
-        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openLink) {
-          Telegram.WebApp.openLink(targetUrl);
-          return false;
-        }
-      } catch (e) {}
-      window.location.href = targetUrl;
+      const targetUrl = './vpn.html';
+      window.location.assign(targetUrl);
       return false;
     }
 
