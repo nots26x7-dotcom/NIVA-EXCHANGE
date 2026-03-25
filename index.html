@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <title>NIVA EXCHANGE Z0NE• MADE BY @S26X_BRO</title>
+  <title>NIVA EXCHANGE • MADE BY @S26X_BRO</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -59,6 +59,34 @@
       0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,.24), 0 10px 35px rgba(37,99,235,.18); }
       50% { box-shadow: 0 0 0 10px rgba(37,99,235,0), 0 16px 45px rgba(239,68,68,.16); }
     }
+    @keyframes waveGlow {
+      0% {
+        transform: scale(.82);
+        opacity: .72;
+      }
+      70% {
+        transform: scale(1.24);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1.35);
+        opacity: 0;
+      }
+    }
+    @keyframes borderWave {
+      0%, 100% {
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,.08) inset,
+          0 0 24px rgba(37,99,235,.16),
+          0 0 38px rgba(37,99,235,.12);
+      }
+      50% {
+        box-shadow:
+          0 0 0 1px rgba(255,255,255,.14) inset,
+          0 0 28px rgba(37,99,235,.22),
+          0 0 48px rgba(239,68,68,.14);
+      }
+    }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
       to { opacity: 1; transform: translateY(0); }
@@ -93,34 +121,54 @@
       transition: opacity .45s ease;
     }
     .loader-orb {
-      width: 150px;
-      height: 150px;
-      border-radius: 34px;
+      width: 170px;
+      height: 170px;
+      border-radius: 38px;
       position: relative;
       display: grid;
       place-items: center;
       margin-bottom: 28px;
-      animation: pulseGlow 2s ease-in-out infinite;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      overflow: visible;
+      isolation: isolate;
+      animation: borderWave 2.8s ease-in-out infinite;
     }
     .loader-orb::before,
     .loader-orb::after {
       content: "";
       position: absolute;
-      inset: -8px;
-      border-radius: 40px;
-      border: 2px solid transparent;
+      inset: -10px;
+      border-radius: 46px;
+      border: 2px solid rgba(88, 166, 255, .22);
+      background: radial-gradient(circle, rgba(37,99,235,.18) 0%, rgba(37,99,235,.08) 35%, rgba(37,99,235,0) 72%);
+      filter: blur(4px);
+      z-index: -2;
+      animation: waveGlow 2.8s ease-out infinite;
+      pointer-events: none;
     }
-    .loader-orb::before { border-top-color: #2563eb; border-right-color: #2563eb; animation: spin 1.4s linear infinite; }
-    .loader-orb::after { inset: -18px; border-bottom-color: #ef4444; border-left-color: #ef4444; animation: spin 1.8s linear infinite reverse; }
+    .loader-orb::after {
+      inset: -20px;
+      border-color: rgba(239, 68, 68, .16);
+      background: radial-gradient(circle, rgba(239,68,68,.12) 0%, rgba(239,68,68,.06) 35%, rgba(239,68,68,0) 74%);
+      animation-delay: 1.4s;
+      z-index: -3;
+    }
     .loader-inner {
-      width: 110px;
-      height: 110px;
-      border-radius: 28px;
+      width: 116px;
+      height: 116px;
+      border-radius: 30px;
       overflow: hidden;
       display: grid;
       place-items: center;
-      background: linear-gradient(180deg, #0f172a, #111827);
-      border: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(15,23,42,.96), rgba(17,24,39,.96));
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.04) inset,
+        0 16px 36px rgba(0,0,0,.34),
+        0 0 28px rgba(37,99,235,.12);
+      position: relative;
+      z-index: 1;
     }
     .loader-inner img { width: 100%; height: 100%; object-fit: cover; }
     .loader-title { font-size: 26px; font-weight: 900; letter-spacing: .12em; }
@@ -527,9 +575,9 @@
       animation: fadeUp .25s ease;
     }
     .admin-top {
-      position: sticky;
-      top: 0;
-      z-index: 3;
+      position: static;
+      top: auto;
+      z-index: auto;
       padding: 10px 0 16px;
       backdrop-filter: blur(12px);
       background: linear-gradient(180deg, rgba(8,17,31,.86), rgba(8,17,31,.4), transparent);
@@ -659,7 +707,7 @@
         <img src="https://i.ibb.co.com/xtyNV9RP/photo-6194980190199418039-y.jpg" alt="Logo">
       </div>
     </div>
-    <div class="loader-title">NIVA <span>EXCHANGE</span> ZONE</div>
+    <div class="loader-title">NIVA <span>EXCHANGE</span> </div>
     <div class="loader-bar"></div>
     <div style="margin-top:14px;color:#95a9cc;font-size:12px;font-weight:700;letter-spacing:.08em;">Best Deal • Premium Experience</div>
   </div>
