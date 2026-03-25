@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <title>NIVA BUYER ZONE • MADE BY @S26X_BRO</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060b18;
+      --bg-2: #0b132b;
+      --card: rgba(20, 28, 48, .85);
+      --card-2: rgba(15, 22, 40, .95);
+      --line: rgba(255,255,255,.08);
+      --text: #eef4ff;
+      --muted: #9fb3d9;
+      --blue: #2563eb;
+      --blue-2: #1e40af;
+      --green: #ef4444;
+      --green-2: #dc2626;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --pink: #1d4ed8;
+      --red-2: #b91c1c;
+      --gradient-main: linear-gradient(135deg, #2563eb, #ef4444);
+      --gradient-main-strong: linear-gradient(135deg, #1e40af, #dc2626);
+      --gradient-soft: linear-gradient(135deg, rgba(37,99,235,.2), rgba(239,68,68,.2));
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; font-family: Inter, system-ui, sans-serif; background: radial-gradient(circle at top left, #1e3a8a 0%, #0b132b 42%, #020617 100%); color: var(--text); min-height: 100%; }
+    body { padding: 108px 13px 112px; overflow-x: hidden; }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      filter: blur(60px);
+      opacity: .25;
+      z-index: -2;
+      animation: floatBlob 10s ease-in-out infinite;
+    }
+    body::before { top: -40px; left: -40px; background: #2563eb; }
+    body::after { bottom: 80px; right: -30px; background: #ef4444; animation-delay: -4s; }
+
+    @keyframes floatBlob {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(12px, 18px) scale(1.08); }
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulseGlow {
+      0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,.24), 0 10px 35px rgba(37,99,235,.18); }
+      50% { box-shadow: 0 0 0 10px rgba(37,99,235,0), 0 16px 45px rgba(239,68,68,.16); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .hidden { display: none !important; }
+    .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+    }
+
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, #1e3a8a 0%, #08111f 48%, #02050a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity .45s ease;
+    }
+    .loader-orb {
+      width: 150px;
+      height: 150px;
+      border-radius: 34px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      margin-bottom: 28px;
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+    .loader-orb::before,
+    .loader-orb::after {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border-radius: 40px;
+      border: 2px solid transparent;
+    }
+    .loader-orb::before { border-top-color: #2563eb; border-right-color: #2563eb; animation: spin 1.4s linear infinite; }
+    .loader-orb::after { inset: -18px; border-bottom-color: #ef4444; border-left-color: #ef4444; animation: spin 1.8s linear infinite reverse; }
+    .loader-inner {
+      width: 110px;
+      height: 110px;
+      border-radius: 28px;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #0f172a, #111827);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .loader-inner img { width: 100%; height: 100%; object-fit: cover; }
+    .loader-title { font-size: 26px; font-weight: 900; letter-spacing: .12em; }
+    .loader-title span { color: #ef4444; }
+    .loader-bar {
+      width: 220px;
+      height: 6px;
+      margin-top: 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      overflow: hidden;
+      position: relative;
+    }
+    .loader-bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 42%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2563eb, #ef4444, #2563eb);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s linear infinite;
+    }
+
+    .top-fixed-bar {
+      position: fixed;
+      top: 12px;
+      left: 13px;
+      right: 13px;
+      z-index: 40;
+      border-radius: 24px;
+      padding: 10px;
+      background: linear-gradient(180deg, rgba(15,22,40,.94), rgba(8,15,28,.9));
+      border: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 14px 35px rgba(0,0,0,.28);
+    }
+    .top-fixed-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .help-only-bar {
+      left: auto;
+      right: 13px;
+      width: auto;
+      padding: 8px;
+      border-radius: 18px;
+    }
+    .help-only-row { justify-content: center; }
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: white;
+      text-decoration: none;
+      font-size: 19px;
+      flex-shrink: 0;
+    }
+
+    .app-shell { display: none; animation: fadeUp .5s ease both; }
+    .profile-card-home { margin: 0 0 12px; }
+    .profile-card {
+      position: relative;
+      margin-top: 0;
+      flex: 1;
+      min-width: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      padding: 12px;
+      background: linear-gradient(135deg, #2563eb, #1e40af 42%, #ef4444 100%);
+      box-shadow: 0 14px 36px rgba(37,99,235,.22), 0 10px 28px rgba(239,68,68,.14);
+    }
+    .profile-card::before {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      top: -34px;
+      right: -28px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      filter: blur(2px);
+    }
+    .profile-row { display: flex; gap: 10px; align-items: center; position: relative; z-index: 1; min-width: 0; }
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,.22);
+      box-shadow: 0 10px 20px rgba(0,0,0,.2);
+    }
+    .username { margin: 0; font-size: 15px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 132px; }
+    .usertag { margin-top: 3px; color: rgba(255,255,255,.84); font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 132px; }
+    .success-pill {
+      margin-left: auto;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 14px;
+      padding: 7px 9px;
+      text-align: center;
+      min-width: 62px;
+      flex-shrink: 0;
+    }
+    .success-pill small { display: block; font-size: 8px; letter-spacing: .14em; font-weight: 900; opacity: .9; }
+    .success-pill b { font-size: 17px; }
+
+    #admin-shortcut { margin: 12px 0 10px; display: none; }
+    .admin-button {
+      width: 100%;
+      border: none;
+      border-radius: 24px;
+      padding: 16px 18px;
+      font-weight: 900;
+      color: white;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb, #ef4444);
+      border: 1px solid rgba(255,255,255,.1);
+      box-shadow: 0 18px 38px rgba(37,99,235,.24), 0 8px 24px rgba(239,68,68,.14);
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 15px 4px 12px;
+      font-size: 16px;
+      font-weight: 900;
+    }
+    .action-card, .coin-card, .simple-card {
+      border-radius: 20px;
+      padding: 13px;
+      margin-bottom: 11px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp .35s ease both;
+    }
+    .action-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      color: inherit;
+    }
+    .action-card::before,
+    .coin-card::before,
+    .simple-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.08), transparent 42%);
+      pointer-events: none;
+    }
+    .left-wrap { display: flex; align-items: center; gap: 13px; }
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 19px;
+      background: linear-gradient(135deg, rgba(37,99,235,.24), rgba(239,68,68,.18));
+      border: 1px solid rgba(255,255,255,.1);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .muted { color: var(--muted); }
+
+    .coin-card {
+      padding-top: 42px;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .coin-card:active { transform: scale(.985); }
+    .coin-card.offline {
+      opacity: .32;
+      filter: saturate(.38) brightness(.78);
+      pointer-events: none;
+      border-color: rgba(239,68,68,.12);
+      background: linear-gradient(180deg, rgba(28,16,22,.48), rgba(10,14,22,.62));
+      box-shadow: none;
+    }
+    .status-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 9px 14px;
+      border-radius: 0 20px 0 18px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border-left: 1px solid rgba(255,255,255,.08);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 8px 18px rgba(0,0,0,.18);
+      min-width: 108px;
+      justify-content: center;
+    }
+    .online { color: #eff6ff; background: linear-gradient(135deg, rgba(37,99,235,.96), rgba(239,68,68,.82)); }
+    .offline { color: #ffe4e6; background: linear-gradient(135deg, rgba(239,68,68,.82), rgba(127,29,29,.72)); }
+    .rate-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 13px; }
+    .rate-box {
+      border-radius: 15px;
+      padding: 10px;
+      background: rgba(6,12,24,.44);
+      border: 1px solid rgba(255,255,255,.07);
+      text-align: center;
+    }
+    .rate-box small { display: block; font-size: 9px; font-weight: 800; color: var(--muted); margin-bottom: 6px; }
+    .rate-val {
+      display: inline-block;
+      min-width: 72px;
+      padding: 6px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 900;
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      box-shadow: 0 10px 20px rgba(29,78,216,.22);
+    }
+    .rate-box:last-child .rate-val { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 10px 20px rgba(239,68,68,.18); }
+    .coin-foot { text-align: center; margin-top: 11px; font-size: 10px; font-weight: 900; letter-spacing: .14em; color: #bfdbfe; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .history-card,
+    .leader-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .leader-card-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .leader-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 8px 16px rgba(0,0,0,.18);
+      flex-shrink: 0;
+    }
+    .leader-meta { min-width: 0; }
+    .leader-meta b, .leader-meta small {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
+    }
+    .medal-badge {
+      min-width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(59,130,246,.16), rgba(34,197,94,.14));
+      border: 1px solid rgba(255,255,255,.08);
+      font-size: 15px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .status-chip {
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .nav-dock {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 14px;
+      height: 64px;
+      border-radius: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      padding: 6px;
+      z-index: 40;
+    }
+    .nav-tab {
+      border: none;
+      background: transparent;
+      color: #8fa8ce;
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: 800;
+      min-width: 0;
+      padding: 0;
+      transition: .2s ease;
+    }
+    .nav-tab.active {
+      background: linear-gradient(135deg, #2563eb, #ef4444);
+      color: #fff;
+      box-shadow: 0 12px 25px rgba(37,99,235,.2), 0 8px 18px rgba(239,68,68,.12);
+    }
+
+    .modal-mask, .admin-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(1, 7, 16, .74);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-mask.active, .admin-mask.active { display: flex; }
+    .bottom-sheet {
+      width: 100%;
+      max-width: 560px;
+      max-height: 92vh;
+      overflow: auto;
+      padding: 26px 18px 24px;
+      border-radius: 32px 32px 0 0;
+      background: linear-gradient(180deg, rgba(19, 31, 56, .98), rgba(12, 17, 32, .99));
+      border-top: 1px solid rgba(255,255,255,.1);
+      animation: slideUp .28s ease;
+    }
+    .sheet-handle {
+      width: 58px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.16);
+      margin: 0 auto 18px;
+    }
+    .sheet-title { margin: 0; font-size: 24px; font-weight: 900; }
+    .sheet-sub { margin: 6px 0 18px; color: var(--muted); font-size: 13px; }
+    .highlight-box {
+      padding: 16px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(37,99,235,.16), rgba(239,68,68,.12));
+      border: 1px dashed rgba(96,165,250,.35);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .highlight-box b { font-size: 26px; letter-spacing: .04em; }
+    .input, .select {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(4, 10, 21, .7);
+      color: white;
+      padding: 15px 16px;
+      border-radius: 18px;
+      font-size: 15px;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .cta-btn, .ghost-btn, .danger-btn, .mini-btn {
+      border: none;
+      cursor: pointer;
+      font-weight: 900;
+      border-radius: 18px;
+    }
+    .cta-btn {
+      width: 100%;
+      padding: 16px;
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #1e40af, #ef4444);
+      background-size: 200% 100%;
+      animation: shimmer 5s linear infinite;
+      box-shadow: 0 18px 35px rgba(37,99,235,.22), 0 10px 24px rgba(239,68,68,.14);
+    }
+    .ghost-btn {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      margin-top: 12px;
+    }
+    .danger-btn { background: linear-gradient(135deg, #7f1d1d, #ef4444); color: #fff; padding: 12px 14px; }
+    .mini-btn { background: rgba(255,255,255,.06); color: white; padding: 10px 12px; }
+
+    .review-box { border-radius: 24px; padding: 16px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); }
+    .review-row { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; }
+    .review-row span { color: var(--muted); }
+
+    .admin-panel {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      padding: 14px 14px 110px;
+      background: radial-gradient(circle at top right, #1e3a8a 0%, #08111f 38%, #02050a 100%);
+      animation: fadeUp .25s ease;
+    }
+    .admin-top {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      padding: 10px 0 16px;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(8,17,31,.86), rgba(8,17,31,.4), transparent);
+    }
+    .admin-head {
+      border-radius: 28px;
+      padding: 18px;
+      background: linear-gradient(135deg, rgba(37,99,235,.42), rgba(15,23,42,.9), rgba(239,68,68,.2));
+      border: 1px solid rgba(255,255,255,.09);
+    }
+    .admin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+    .stat-card {
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      text-align: center;
+    }
+    .stat-card small { display: block; color: #9fb2d1; font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+    .stat-card b { display: block; font-size: 19px; margin-top: 6px; }
+
+    .admin-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+      padding: 6px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .admin-tab {
+      border: none;
+      padding: 12px 10px;
+      border-radius: 18px;
+      font-weight: 900;
+      color: #9bb0d0;
+      background: transparent;
+    }
+    .admin-tab.active { background: linear-gradient(135deg, #2563eb, #ef4444); color: #fff; }
+
+    .admin-order,
+    .settings-card,
+    .manager-card {
+      border-radius: 24px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: rgba(15, 24, 44, .9);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 16px 35px rgba(0,0,0,.22);
+    }
+    .admin-order-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .admin-order-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin-bottom: 12px; }
+    .tile {
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .tile small { display: block; color: #8ca4c8; font-size: 10px; font-weight: 800; margin-bottom: 5px; }
+    .copy-box {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(37,99,235,.08);
+      box-shadow: inset 0 0 0 1px rgba(239,68,68,.08);
+      border: 1px dashed rgba(96,165,250,.45);
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+    .actions-row { display: flex; gap: 8px; }
+    .actions-row button { flex: 1; padding: 12px; border-radius: 14px; border: none; color: white; font-weight: 900; }
+    .approve { background: linear-gradient(135deg, #2563eb, #ef4444); }
+    .reject { background: linear-gradient(135deg, #991b1b, #ef4444); }
+    .delete { flex: 0 0 48px !important; background: rgba(255,255,255,.08); }
+
+    .manager-card h4, .settings-card h4 { margin: 0 0 14px; font-size: 16px; }
+    .stack { display: grid; gap: 10px; }
+    .switch-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .switch {
+      position: relative;
+      width: 52px;
+      height: 30px;
+      display: inline-block;
+    }
+    .switch input { display: none; }
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,.1);
+      border-radius: 999px;
+      transition: .2s ease;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      top: 4px;
+      left: 4px;
+      border-radius: 50%;
+      background: white;
+      transition: .2s ease;
+    }
+    .switch input:checked + .slider { background: linear-gradient(135deg, #2563eb, #ef4444); }
+    .switch input:checked + .slider::before { transform: translateX(22px); }
+
+    .empty-state { text-align: center; padding: 26px 14px; color: var(--muted); }
+    .small-note { font-size: 12px; color: var(--muted); }
+
+    @media (min-width: 720px) {
+      body { max-width: 580px; margin: 0 auto; }
+      .nav-dock { max-width: 552px; margin: 0 auto; }
+      .bottom-sheet { border-radius: 32px; margin-bottom: 14px; }
+    }
+  
+    .vpn-admin-link-card {
+      border-radius: 20px;
+      padding: 14px;
+      background: linear-gradient(135deg, rgba(10,16,30,.95), rgba(18,28,48,.92));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 14px 34px rgba(0,0,0,.24);
+    }
+    #vpn-link-card .icon-box {
+      background: linear-gradient(135deg, rgba(37,99,235,.28), rgba(239,68,68,.24));
+    }
+
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div class="loader-orb glass">
+      <div class="loader-inner">
+        <img src="https://i.ibb.co.com/nsLQgRFR/photo-2025-12-05-11-17-43.jpg" alt="Logo">
+      </div>
+    </div>
+    <div class="loader-title">NIVA <span>BUYER</span> ZONE</div>
+    <div class="loader-bar"></div>
+    <div style="margin-top:14px;color:#95a9cc;font-size:12px;font-weight:700;letter-spacing:.08em;">Best Deal • Premium Experience</div>
+  </div>
+
+  <div id="app" class="app-shell">
+    <div class="top-fixed-bar glass help-only-bar">
+      <div class="top-fixed-row help-only-row">
+        <a id="help-link" href="#" target="_blank" class="icon-btn glass">🎧</a>
+      </div>
+    </div>
+
+    <section id="home-scr" class="screen active" style="padding-top:52px;">
+      <section class="profile-card profile-card-home">
+        <div class="profile-row">
+          <img id="user-pfp" class="avatar" src="" alt="avatar">
+          <div style="min-width:0;">
+            <h2 id="user-display-name" class="username">User</h2>
+            <div id="user-display-tag" class="usertag">@guest</div>
+          </div>
+          <div class="success-pill">
+            <small>SUCCESS</small>
+            <b id="suc-count-display">0</b>
+          </div>
+        </div>
+      </section>
+
+      <a href="#" id="chan-link" target="_blank" class="action-card glass">
+        <div class="left-wrap">
+          <div class="icon-box">📢</div>
+          <div>
+            <b>Join Channel</b><br>
+            <small class="muted">Updates, offers & proofs</small>
+          </div>
+        </div>
+        <span>❯</span>
+      </a>
+
+      <a href="idk.html" id="vpn-link-card" class="action-card glass">
+        <div class="left-wrap">
+          <div class="icon-box">🔐</div>
+          <div>
+            <b>BUY VPN'S</b><br>
+            <small class="muted">Fast, secure VPN access</small>
+          </div>
+        </div>
+        <span>❯</span>
+      </a>
+
+      <div id="admin-shortcut">
+        <button class="admin-button" onclick="openAdminPanel()">🛡️ Access Admin Dashboard</button>
+      </div>
+
+      <div class="section-title">
+        <span>Coin Market</span>
+        <span class="small-note">---</span>
+      </div>
+      <div id="market-list-display"></div>
+    </section>
+
+    <section id="history-scr" class="screen">
+      <div class="section-title"><span>Order History</span></div>
+      <div id="history-list-display"></div>
+    </section>
+
+    <section id="rank-scr" class="screen">
+      <div class="section-title"><span>Top Sellers</span></div>
+      <div id="rank-list-display"></div>
+    </section>
+
+  </div>
+
+  <nav class="nav-dock glass" id="nav-dock">
+    <button class="nav-tab active" onclick="switchTab('home-scr', this)">🏠</button>
+    <button class="nav-tab" onclick="switchTab('history-scr', this)">🕒</button>
+    <button class="nav-tab" onclick="switchTab('rank-scr', this)">🏆</button>
+  </nav>
+
+  <div id="order-modal" class="modal-mask" onclick="backdropClose(event, 'order-modal')">
+    <div class="bottom-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <h2 id="modal-coin-title" class="sheet-title">Sell Coin</h2>
+        <button class="mini-btn" onclick="closeModal('order-modal')">✕</button>
+      </div>
+      <p class="sheet-sub">Enter your details carefully before submitting.</p>
+
+      <div class="highlight-box">
+        <div style="font-size:11px;font-weight:900;letter-spacing:.16em;color:#fcd34d;">SEND COINS TO THIS ID</div>
+        <b id="display-admin-id">---</b>
+        <div style="margin-top:10px;"><button class="mini-btn" onclick="copyAdminID()">COPY ID</button></div>
+      </div>
+
+      <div class="simple-card glass" style="margin:12px 0 0;padding:12px 14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+          <span class="muted" style="font-size:12px;font-weight:800;">MINIMUM SUBMIT LIMIT</span>
+          <b id="display-submit-limit" style="font-size:18px;color:#fcd34d;">0</b>
+        </div>
+      </div>
+
+      <div class="stack">
+        <input type="number" id="input-qty" class="input" placeholder="Amount" oninput="calculatePayout()">
+        <input type="text" id="input-sender" class="input" placeholder="Sender Username">
+        <div class="grid-2">
+          <select id="input-method" class="select"></select>
+          <input type="text" id="input-number" class="input" placeholder="Payment Number">
+        </div>
+      </div>
+
+      <div class="action-card glass" style="margin-top:16px;">
+        <div>
+          <div style="font-size:12px;color:var(--muted);font-weight:800;">Applied Rate</div>
+          <div id="display-applied-rate" style="font-size:24px;font-weight:900;">0৳</div>
+        </div>
+        <div style="text-align:right;">
+          <small style="display:block;color:#fca5a5;font-weight:900;">FEE: -5৳</small>
+          <b id="display-final-payout" style="font-size:28px;color:#6ee7b7;">0.00 ৳</b>
+        </div>
+      </div>
+
+      <button class="cta-btn" onclick="showConfirmation()">Next Step →</button>
+    </div>
+  </div>
+
+  <div id="review-modal" class="modal-mask" onclick="backdropClose(event, 'review-modal')">
+    <div class="bottom-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <h2 class="sheet-title">Review Details</h2>
+      <p class="sheet-sub">Please check everything before final submission.</p>
+      <div class="review-box">
+        <div class="review-row"><span>Coin</span><b id="r-coin">---</b></div>
+        <div class="review-row"><span>Amount</span><b id="r-qty">---</b></div>
+        <div class="review-row"><span>Submit Limit</span><b id="r-limit">---</b></div>
+        <div class="review-row"><span>Sender</span><b id="r-sender">---</b></div>
+        <div class="review-row"><span>Method</span><b id="r-method">---</b></div>
+        <div class="review-row"><span>Account No</span><b id="r-number">---</b></div>
+        <div class="review-row"><span>Applied Rate</span><b id="r-rate">---</b></div>
+        <div class="review-row" style="border-top:1px dashed rgba(255,255,255,.12);margin-top:8px;padding-top:14px;"><span>You Will Get</span><b id="r-pay" style="font-size:23px;color:#6ee7b7;">0.00 ৳</b></div>
+      </div>
+      <button class="cta-btn" id="confirm-submit-btn" onclick="finalSubmitOrder()">Confirm & Submit ✅</button>
+      <button class="ghost-btn" onclick="closeModal('review-modal')">Go Back & Edit</button>
+    </div>
+  </div>
+
+  <div id="admin-master-ui" class="admin-mask" onclick="backdropClose(event, 'admin-master-ui')">
+    <div class="admin-panel" onclick="event.stopPropagation()">
+      <div class="admin-top">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+          <button class="danger-btn" onclick="closeAdminPanel()">Close ✕</button>
+        </div>
+        <div class="admin-head">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;">
+            <div>
+              <div style="font-size:12px;color:#a5b4fc;font-weight:900;letter-spacing:.16em;">ADMIN COMMAND CENTER</div>
+              <h2 style="margin:6px 0 0;font-size:24px;">Manage Orders & Rates</h2>
+            </div>
+            <div style="font-size:36px;">🛡️</div>
+          </div>
+          <div class="admin-grid">
+            <div class="stat-card"><small>PENDING</small><b id="count-pending">0</b></div>
+            <div class="stat-card"><small>APPROVED</small><b id="count-completed">0</b></div>
+            <div class="stat-card"><small>REJECTED</small><b id="count-rejected">0</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('pending', this)">Pending</button>
+        <button class="admin-tab" onclick="switchAdminTab('history', this)">History</button>
+        <button class="admin-tab" onclick="switchAdminTab('settings', this)">Settings</button>
+      </div>
+
+      <div id="admin-dynamic-content"></div>
+    </div>
+  </div>
+
+  <script>
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyDMPXsRLChUaHlpIRHwm6PH4uYxR21stO4",
+      authDomain: "niva-exchange.firebaseapp.com",
+      databaseURL: "https://niva-exchange-default-rtdb.firebaseio.com",
+      projectId: "niva-exchange",
+      storageBucket: "niva-exchange.firebasestorage.app",
+      messagingSenderId: "899429789770",
+      appId: "1:899429789770:web:b7157859ea18f766b276b3",
+      measurementId: "G-66SZ44489Z"
+    };
+
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const storage = firebase.storage();
+    const tg = window.Telegram.WebApp;
+    const ADMIN_LIST = [8391410347, 8505710811];
+
+    let currentSelectedCoin = "";
+    let currentCoinRate = 0;
+    let currentAdminRate = 0;
+    let currentCoinTID = "";
+    let currentCoinSubmitLimit = 0;
+    let currentCoinAdminMinQty = 100000;
+    let currentAppliedRate = 0;
+    let calculatedFinalPayout = 0;
+    let adminActiveTab = 'pending';
+    let currentTelegramUser = 'guest';
+
+    function safeHaptic(type, level) {
+      try {
+        if (!tg || !tg.HapticFeedback) return;
+        if (type === 'impact') tg.HapticFeedback.impactOccurred(level || 'light');
+        if (type === 'notify') tg.HapticFeedback.notificationOccurred(level || 'success');
+      } catch (e) {}
+    }
+
+    function formatMoney(value) {
+      return `${parseFloat(value || 0).toFixed(2)}৳`;
+    }
+
+    function normalizeSubmitLimit(value) {
+      const parsed = parseInt(value, 10);
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 10000;
+    }
+
+    function normalizeAdminMinQty(value) {
+      const parsed = parseInt(value, 10);
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 100000;
+    }
+
+    let tutorialSoundMuted = true;
+    let currentTutorialData = {};
+    let tutorialUploadInProgress = false;
+
+    function getTutorialEmbedUrl(url, muted = tutorialSoundMuted) {
+      const raw = String(url || '').trim();
+      if (!raw) return '';
+      const muteValue = muted ? '1' : '0';
+
+      const origin = encodeURIComponent(location.origin || 'https://localhost');
+      const ytBaseParams = `playsinline=1&rel=0&mute=${muteValue}&enablejsapi=1&origin=${origin}`;
+
+      if (/youtube\.com\/embed\//i.test(raw)) {
+        const cleaned = raw.replace(/([?&])(playsinline|rel|modestbranding|mute|enablejsapi|origin)=[^&]*/gi, '').replace(/[?&]$/, '');
+        const sep = cleaned.includes('?') ? '&' : '?';
+        return `${cleaned}${sep}${ytBaseParams}`;
+      }
+
+      const ytMatch = raw.match(/(?:youtube\.com\/(?:watch\?.*?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/i);
+      if (ytMatch && ytMatch[1]) {
+        return `https://www.youtube.com/embed/${ytMatch[1]}?${ytBaseParams}`;
+      }
+
+      return raw;
+    }
+
+    function escapeHtml(val) {
+      return String(val || '').replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
+    }
+
+    function isDirectTutorialVideo(url, data = {}) {
+      const raw = String(url || '').trim();
+      const mime = String(data.mimeType || '').toLowerCase();
+      return /^video\//.test(mime) || /(?:\.mp4|\.webm|\.ogg|\.mov|\.m4v)(?:\?.*)?$/i.test(raw) || /firebasestorage|googleapis\.com/i.test(raw);
+    }
+
+    function getTutorialContentHtml(data) {
+      const title = String(data.title || 'Watch Tutorial').trim();
+      const url = String(data.url || '').trim();
+      const embedUrl = getTutorialEmbedUrl(url);
+      if (!embedUrl) {
+        return `<div class="empty-state glass">No tutorial video set yet.</div>`;
+      }
+      const isDirectVideo = isDirectTutorialVideo(url, data);
+      const safeTitle = escapeHtml(title);
+      const openLabel = isDirectVideo ? 'Download / Open' : 'Open Video';
+      return `
+        <div class="simple-card glass" style="padding:16px;">
+          <div style="margin-bottom:12px;">
+            <b style="font-size:18px;display:block;">${safeTitle}</b>
+            <small class="muted">Watch the full selling tutorial here.</small>
+          </div>
+          <div style="overflow:hidden;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:#08111f;">${isDirectVideo ? `<video id="tutorial-video-player" controls playsinline preload="metadata" ${tutorialSoundMuted ? 'muted' : ''} style="width:100%;display:block;max-height:70vh;background:#000;" src="${embedUrl}"></video>` : `<iframe id="tutorial-video-frame" src="${embedUrl}" title="${safeTitle}" referrerpolicy="strict-origin-when-cross-origin" loading="lazy" style="width:100%;height:240px;border:0;display:block;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`}</div>
+          <div class="grid-2" style="margin-top:14px;">
+            <a href="${url}" target="_blank" class="action-card glass" style="margin:0;">
+              <div class="left-wrap">
+                <div class="icon-box">▶️</div>
+                <div>
+                  <b>${openLabel}</b><br>
+                  <small class="muted">Tap to watch in full screen</small>
+                </div>
+              </div>
+              <span>❯</span>
+            </a>
+            <button class="cta-btn" style="width:100%;margin:0;padding:8px 10px;font-size:12px;border-radius:10px;min-height:36px;" onclick="toggleTutorialMute()">${tutorialSoundMuted ? '🔇 Unmute' : '🔊 Mute'}</button>
+          </div>
+        </div>`;
+    }
+
+    function syncTutorialPlayerState() {
+      const player = document.getElementById('tutorial-video-player');
+      if (player) {
+        player.muted = tutorialSoundMuted;
+        player.playsInline = true;
+        player.onloadeddata = null;
+        player.onerror = function() {
+          showToast('Video failed to play. Please re-upload the file from Admin.');
+        };
+      }
+    }
+
+    function fetchTutorialVideo() {
+      db.ref('settings/tutorial').on('value', snap => {
+        const data = snap.val() || {};
+        currentTutorialData = data;
+        const wrap = document.getElementById('tutorial-content-display');
+        if (wrap) {
+          wrap.innerHTML = getTutorialContentHtml(data);
+          syncTutorialPlayerState();
+        }
+      });
+    }
+
+    function toggleTutorialMute() {
+      const url = String((currentTutorialData && currentTutorialData.url) || '').trim();
+      if (!url) return showToast('No tutorial video found.');
+      tutorialSoundMuted = !tutorialSoundMuted;
+      const wrap = document.getElementById('tutorial-content-display');
+      if (wrap) {
+        wrap.innerHTML = getTutorialContentHtml(currentTutorialData || {});
+        syncTutorialPlayerState();
+      }
+      showToast(tutorialSoundMuted ? 'Tutorial muted.' : 'Tutorial unmuted.');
+    }
+
+    function removeTutorialVideo() {
+      if (!confirm('Remove tutorial video?')) return;
+      const storagePath = String((currentTutorialData && currentTutorialData.storagePath) || '').trim();
+      const removeDb = db.ref('settings/tutorial').remove();
+      const removeStorage = storagePath ? storage.ref(storagePath).delete().catch(() => null) : Promise.resolve();
+      Promise.all([removeDb, removeStorage]).then(() => {
+        currentTutorialData = {};
+        tutorialSoundMuted = true;
+        const title = document.getElementById('adm-tutorial-title');
+        const url = document.getElementById('adm-tutorial-url');
+        const fileInput = document.getElementById('adm-tutorial-file');
+        const note = document.getElementById('adm-tutorial-upload-note');
+        if (title) title.value = '';
+        if (url) url.value = '';
+        if (fileInput) fileInput.value = '';
+        if (note) note.innerText = 'Choose a video from your phone and upload it, or paste a YouTube link and tap Save Link.';
+        const wrap = document.getElementById('tutorial-content-display');
+        if (wrap) wrap.innerHTML = getTutorialContentHtml({});
+        showToast('Tutorial video removed!');
+      });
+    }
+
+    function showToast(msg) {
+      alert(msg);
+    }
+
+    function backdropClose(e, id) {
+      if (e.target.id === id) closeModal(id);
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('active');
+      setTimeout(() => { el.style.display = 'none'; }, 160);
+    }
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = 'flex';
+      requestAnimationFrame(() => el.classList.add('active'));
+    }
+
+    function bootLoader() {
+      setTimeout(() => {
+        const loading = document.getElementById('loading');
+        loading.style.opacity = '0';
+        setTimeout(() => {
+          loading.remove();
+          document.getElementById('app').style.display = 'block';
+        }, 420);
+      }, 1850);
+    }
+
+    function initTelegramUser() {
+      tg.expand();
+      tg.ready();
+      const user = tg.initDataUnsafe.user || { id: 0, first_name: 'Guest', username: 'guest' };
+      const userId = Number(user.id || 0);
+      currentTelegramUser = user.username || user.first_name || 'guest';
+
+      document.getElementById('user-display-name').innerText = `${user.first_name || 'Guest'}${user.last_name ? ' ' + user.last_name : ''}`;
+      document.getElementById('user-display-tag').innerText = '@' + (user.username || 'guest');
+      document.getElementById('user-pfp').src = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name || 'Guest')}&background=2563eb&color=ffffff&bold=true`;
+      window.currentUserProfile = {
+        nickname: `${user.first_name || ''}${user.last_name ? ' ' + user.last_name : ''}`.trim() || (user.username || 'Guest'),
+        username: user.username || '',
+        photo: user.photo_url || ''
+      };
+      if (window.currentUserProfile.username) {
+        db.ref('userProfiles/' + window.currentUserProfile.username).update(window.currentUserProfile);
+      }
+
+      const adminShortcut = document.getElementById('admin-shortcut');
+      if (ADMIN_LIST.includes(userId)) {
+        adminShortcut.style.display = 'block';
+      } else {
+        adminShortcut.remove();
+      }
+    }
+
+    function initializeDataFetching() {
+      db.ref('marketConfig').on('value', snap => {
+        let html = '';
+        snap.forEach(c => {
+          const v = c.val() || {};
+          const isOnline = v.status !== false;
+          html += `
+            <div class="coin-card glass ${isOnline ? '' : 'offline'}" onclick="${isOnline ? `openOrderModal('${c.key.replace(/'/g, "\\'")}', ${parseFloat(v.userRate || 0)}, ${parseFloat(v.adminRate || 0)}, '${String(v.transferId || '').replace(/'/g, "\\'")}', ${normalizeSubmitLimit(v.submitLimit)}, ${normalizeAdminMinQty(v.adminMinQty)})` : ''}">
+              <div class="status-badge ${isOnline ? 'online' : 'offline'}">${isOnline ? '● Online' : '● Offline'}</div>
+              <div class="left-wrap">
+                <div class="icon-box">🪙</div>
+                <div>
+                  <b style="font-size:16px;">${c.key}</b><br>
+                  <small class="muted" style="font-weight:800;">LIVE MARKET RATE</small>
+                </div>
+              </div>
+              <div class="rate-grid">
+                <div class="rate-box"><small>User Rate</small><div class="rate-val">${parseFloat(v.userRate || 0)}৳</div></div>
+                <div class="rate-box"><small>Admin Rate</small><div class="rate-val">${parseFloat(v.adminRate || 0)}৳</div></div>
+              </div>
+              <div class="coin-foot">Min Submit: ${normalizeSubmitLimit(v.submitLimit).toLocaleString()} • Admin Rate From: ${normalizeAdminMinQty(v.adminMinQty).toLocaleString()} • TAP TO SELL</div>
+            </div>`;
+        });
+        document.getElementById('market-list-display').innerHTML = html || `<div class="empty-state glass action-card">No market data found.</div>`;
+      });
+
+      db.ref('settings/links').on('value', snap => {
+        const links = snap.val() || {};
+        document.getElementById('chan-link').href = links.channel || '#';
+        document.getElementById('help-link').href = links.help || '#';
+      });
+
+      db.ref('paymentMethods').on('value', snap => {
+        let options = '';
+        snap.forEach(p => {
+          const v = p.val() || {};
+          if (v.status !== false) options += `<option value="${p.key}">${p.key}</option>`;
+        });
+        document.getElementById('input-method').innerHTML = options || '<option value="">No Method</option>';
+      });
+
+      fetchTutorialVideo();
+    }
+
+    function openOrderModal(name, userRate, adminRate, tid, submitLimit, adminMinQty) {
+      currentSelectedCoin = name;
+      currentCoinRate = parseFloat(userRate || 0);
+      currentAdminRate = parseFloat(adminRate || 0);
+      currentCoinTID = tid || '';
+      currentCoinSubmitLimit = normalizeSubmitLimit(submitLimit);
+      currentCoinAdminMinQty = adminMinQty === undefined || adminMinQty === null || adminMinQty === ''
+        ? 100000
+        : normalizeAdminMinQty(adminMinQty);
+      currentAppliedRate = currentCoinRate;
+
+      document.getElementById('modal-coin-title').innerText = `Sell ${name}`;
+      document.getElementById('display-admin-id').innerText = tid || '---';
+      document.getElementById('display-submit-limit').innerText = currentCoinSubmitLimit.toLocaleString();
+      document.getElementById('display-applied-rate').innerText = `${currentCoinRate}৳`;
+      document.getElementById('display-final-payout').innerText = '0.00 ৳';
+
+      const qtyInput = document.getElementById('input-qty');
+      qtyInput.value = '';
+      qtyInput.placeholder = `Amount (Min ${currentCoinSubmitLimit.toLocaleString()} | Admin rate from ${currentCoinAdminMinQty.toLocaleString()})`;
+      qtyInput.min = currentCoinSubmitLimit;
+      document.getElementById('input-sender').value = '';
+      document.getElementById('input-number').value = '';
+      openModal('order-modal');
+    }
+
+    function resolveAppliedRate(qty) {
+      const safeQty = parseFloat(qty || 0) || 0;
+      const safeUserRate = parseFloat(currentCoinRate || 0) || 0;
+      const safeAdminRate = parseFloat(currentAdminRate || 0) || 0;
+      const triggerQty = parseFloat(currentCoinAdminMinQty || 0) || 0;
+      if (safeAdminRate > 0 && safeQty >= triggerQty) return safeAdminRate;
+      return safeUserRate;
+    }
+
+    function recalculateOrderPreview(qty) {
+      const safeQty = parseFloat(qty || 0) || 0;
+      currentAppliedRate = resolveAppliedRate(safeQty);
+      const raw = (safeQty / 1000) * currentAppliedRate;
+      calculatedFinalPayout = raw > 5 ? raw - 5 : 0;
+      document.getElementById('display-applied-rate').innerText = `${currentAppliedRate}৳`;
+      document.getElementById('display-final-payout').innerText = `${calculatedFinalPayout.toFixed(2)} ৳`;
+    }
+
+    function calculatePayout() {
+      const qty = parseFloat(document.getElementById('input-qty').value || '0') || 0;
+      recalculateOrderPreview(qty);
+    }
+
+    function copyAdminID() {
+      navigator.clipboard.writeText(String(currentCoinTID || ''));
+      safeHaptic('notify', 'success');
+      showToast('Admin ID copied!');
+    }
+
+    function showConfirmation() {
+      const qty = parseFloat(document.getElementById('input-qty').value || '0') || 0;
+      const sender = document.getElementById('input-sender').value.trim();
+      const method = document.getElementById('input-method').value;
+      const number = document.getElementById('input-number').value.trim();
+
+      recalculateOrderPreview(qty);
+
+      if (qty < currentCoinSubmitLimit || !sender || !method || !number) {
+        safeHaptic('notify', 'error');
+        return showToast(`Fill all details correctly! (Min ${currentCoinSubmitLimit.toLocaleString()})`);
+      }
+
+      document.getElementById('r-coin').innerText = currentSelectedCoin;
+      document.getElementById('r-qty').innerText = qty;
+      document.getElementById('r-limit').innerText = `${currentCoinSubmitLimit.toLocaleString()} (Admin rate from ${currentCoinAdminMinQty.toLocaleString()})`;
+      document.getElementById('r-sender').innerText = sender;
+      document.getElementById('r-method').innerText = method;
+      document.getElementById('r-number').innerText = number;
+      document.getElementById('r-rate').innerText = `${currentAppliedRate}৳`;
+      document.getElementById('r-pay').innerText = `${calculatedFinalPayout.toFixed(2)} ৳`;
+
+      closeModal('order-modal');
+      setTimeout(() => openModal('review-modal'), 120);
+    }
+
+    function finalSubmitOrder() {
+      const btn = document.getElementById('confirm-submit-btn');
+      btn.disabled = true;
+      btn.innerText = 'Submitting...';
+
+      const qty = parseFloat(document.getElementById('r-qty').innerText || '0') || 0;
+      recalculateOrderPreview(qty);
+
+      const user = tg.initDataUnsafe.user || { id: 12345, username: 'guest', first_name: 'guest' };
+      const orderId = Date.now();
+      const payload = {
+        id: orderId,
+        user: user.username || user.first_name || 'guest',
+        coin: currentSelectedCoin,
+        amt: document.getElementById('r-qty').innerText,
+        payable: parseFloat(calculatedFinalPayout.toFixed(2)),
+        sender: document.getElementById('r-sender').innerText,
+        number: document.getElementById('r-number').innerText,
+        method: document.getElementById('r-method').innerText,
+        status: 'pending',
+        targetId: currentCoinTID,
+        submitLimit: currentCoinSubmitLimit,
+        adminMinQty: currentCoinAdminMinQty,
+        appliedRate: parseFloat(currentAppliedRate || 0),
+        nickname: `${user.first_name || ''}${user.last_name ? ' ' + user.last_name : ''}`.trim() || (user.username || 'Guest'),
+        username: user.username || '',
+        photo: user.photo_url || '',
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      };
+
+      db.ref('orders/' + orderId).set(payload).then(() => {
+        safeHaptic('notify', 'success');
+        closeModal('review-modal');
+        showToast('Order submitted successfully! Check history for updates.');
+        btn.disabled = false;
+        btn.innerText = 'Confirm & Submit ✅';
+      }).catch(err => {
+        showToast('Error: ' + err.message);
+        btn.disabled = false;
+        btn.innerText = 'Confirm & Submit ✅';
+      });
+    }
+
+    function fetchHistory() {
+      const user = tg.initDataUnsafe.user || { username: 'guest', first_name: 'guest' };
+      const uname = user.username || user.first_name || 'guest';
+      db.ref('orders').orderByChild('user').equalTo(uname).on('value', snap => {
+        let html = '';
+        let completedCount = 0;
+        const orders = [];
+        snap.forEach(item => orders.push(item.val()));
+        orders.reverse().forEach(d => {
+          if (d.status === 'completed') completedCount++;
+          const bg = d.status === 'pending' ? 'rgba(245,158,11,.12)' : d.status === 'completed' ? 'rgba(16,185,129,.12)' : 'rgba(239,68,68,.12)';
+          const color = d.status === 'pending' ? '#fbbf24' : d.status === 'completed' ? '#6ee7b7' : '#fca5a5';
+          html += `
+            <div class="simple-card glass history-card">
+              <div>
+                <b>${d.amt} ${d.coin}</b><br>
+                <small class="muted">Payable: ${formatMoney(d.payable)} • To: ${d.targetId || '---'}</small>
+              </div>
+              <div class="status-chip" style="background:${bg};color:${color};border:1px solid rgba(255,255,255,.06);">${String(d.status || 'pending').toUpperCase()}</div>
+            </div>`;
+        });
+        document.getElementById('history-list-display').innerHTML = html || `<div class="empty-state glass">No history found.</div>`;
+        document.getElementById('suc-count-display').innerText = completedCount;
+      });
+    }
+
+    function fetchLeaderboard() {
+      const rankDisplay = document.getElementById('rank-list-display');
+      Promise.all([
+        db.ref('leaderboard').once('value'),
+        db.ref('userProfiles').once('value')
+      ]).then(([boardSnap, profileSnap]) => {
+        const profileMap = profileSnap.val() || {};
+        const users = [];
+        boardSnap.forEach(u => {
+          const data = u.val() || {};
+          if (!data.user) return;
+          const profile = profileMap[data.username] || profileMap[data.user] || {};
+          users.push({
+            ...data,
+            nickname: data.nickname || profile.nickname || data.user,
+            username: data.username || profile.username || data.user,
+            photo: data.photo || profile.photo || ''
+          });
+        });
+        users.sort((a, b) => (parseFloat(b.totalAmount) || 0) - (parseFloat(a.totalAmount) || 0));
+        const top10 = users.slice(0, 10);
+        let html = '';
+        if (!top10.length) {
+          html = `<div class="empty-state glass">No earners yet.</div>`;
+        } else {
+          top10.forEach((d, i) => {
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
+            const nick = d.nickname || d.username || d.user || 'Unknown';
+            const tag = '@' + (d.username || d.user || 'guest');
+            const avatar = d.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(nick)}&background=1d4ed8&color=ffffff&bold=true`;
+            html += `
+              <div class="simple-card glass leader-card">
+                <div class="leader-card-main">
+                  <div class="medal-badge">${medal}</div>
+                  <img class="leader-avatar" src="${avatar}" alt="${nick}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(nick)}&background=1d4ed8&color=ffffff&bold=true'">
+                  <div class="leader-meta">
+                    <b>${nick}</b>
+                    <small class="muted">${tag}</small>
+                  </div>
+                </div>
+                <b style="color:#6ee7b7;">${formatMoney(d.totalAmount)}</b>
+              </div>`;
+          });
+        }
+        rankDisplay.innerHTML = html;
+      }).catch(() => {
+        rankDisplay.innerHTML = `<div class="empty-state glass">Leaderboard load failed.</div>`;
+      });
+    }
+
+    function switchTab(id, el) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+      el.classList.add('active');
+      if (id === 'history-scr') fetchHistory();
+      if (id === 'rank-scr') fetchLeaderboard();
+    }
+
+    function openAdminPanel() {
+      const user = tg.initDataUnsafe.user || {};
+      const userId = Number(user.id || 0);
+      if (!ADMIN_LIST.includes(userId)) {
+        safeHaptic('notify', 'error');
+        return showToast('Access denied! You are not an authorized administrator.');
+      }
+      openModal('admin-master-ui');
+      adminActiveTab = 'pending';
+      document.querySelectorAll('.admin-tab').forEach((tab, index) => tab.classList.toggle('active', index === 0));
+      renderAdminData();
+    }
+
+    function closeAdminPanel() {
+      closeModal('admin-master-ui');
+    }
+
+    function startAdminEngine() {
+      db.ref('orders').on('value', snap => {
+        const orders = snap.val() || {};
+        const counts = { pending: 0, completed: 0, rejected: 0 };
+        Object.values(orders).forEach(o => {
+          if (counts[o.status] !== undefined) counts[o.status]++;
+        });
+        document.getElementById('count-pending').innerText = counts.pending;
+        document.getElementById('count-completed').innerText = counts.completed;
+        document.getElementById('count-rejected').innerText = counts.rejected;
+        if (document.getElementById('admin-master-ui').style.display === 'flex') renderAdminData();
+      });
+    }
+
+    function switchAdminTab(tab, el) {
+      adminActiveTab = tab;
+      document.querySelectorAll('.admin-tab').forEach(x => x.classList.remove('active'));
+      el.classList.add('active');
+      renderAdminData();
+    }
+
+    function copyToClipboard(val) {
+      navigator.clipboard.writeText(String(val || ''));
+      safeHaptic('notify', 'success');
+      showToast('Copied: ' + val);
+    }
+
+    function renderAdminData() {
+      const area = document.getElementById('admin-dynamic-content');
+      if (!area) return;
+
+      if (adminActiveTab === 'settings') {
+        renderSettingsUI(area);
+        return;
+      }
+
+      const isHistory = adminActiveTab === 'history';
+      db.ref('orders').once('value').then(snap => {
+        const orders = snap.val() || {};
+        const list = Object.values(orders).sort((a, b) => (b.id || 0) - (a.id || 0));
+        let html = '';
+
+        list.forEach(o => {
+          const shouldShow = isHistory ? o.status !== 'pending' : o.status === 'pending';
+          if (!shouldShow) return;
+          const color = o.status === 'pending' ? '#f59e0b' : o.status === 'completed' ? '#10b981' : '#ef4444';
+          html += `
+            <div class="admin-order">
+              <div class="admin-order-top">
+                <div>
+                  <b style="font-size:16px;">@${o.user || 'unknown'}</b><br>
+                  <small style="color:#8ca4c8;">${o.sender || '---'}</small>
+                </div>
+                <div class="status-chip" style="background:${color}1f;color:${color};border:1px solid ${color}44;">${String(o.status || '').toUpperCase()}</div>
+              </div>
+
+              <div class="admin-order-grid">
+                <div class="tile"><small>Coin</small><b>${o.coin || '---'}</b></div>
+                <div class="tile"><small>Method</small><b>${o.method || '---'}</b></div>
+                <div class="tile"><small>Amount</small><b>${o.amt || '---'}</b></div>
+                <div class="tile"><small>Payout</small><b style="color:#6ee7b7;">${formatMoney(o.payable)}</b></div>
+              </div>
+
+              <div class="copy-box" onclick="copyToClipboard('${String(o.number || '').replace(/'/g, "\\'")}')">
+                <small style="display:block;color:#93c5fd;font-weight:900;letter-spacing:.08em;">TAP TO COPY NUMBER</small>
+                <b style="font-size:16px;">📱 ${o.number || '---'}</b>
+              </div>
+
+              <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:10px;">
+                <small style="color:#8ca4c8;">Target ID: ${o.targetId || '---'}</small>
+                <small style="color:#8ca4c8;">Rate: ${parseFloat(o.appliedRate || 0)}৳</small>
+              </div>
+
+              <div class="actions-row">
+                ${o.status === 'pending' ? `<button class="approve" onclick="updateOrderStatus('${o.id}','completed','${String(o.user || '').replace(/'/g, "\\'")}',${parseFloat(o.payable || 0)})">Approve</button>
+                <button class="reject" onclick="updateOrderStatus('${o.id}','rejected')">Reject</button>` : ''}
+                <button class="delete" onclick="deleteOrder('${o.id}')">🗑️</button>
+              </div>
+            </div>`;
+        });
+
+        area.innerHTML = html || `<div class="empty-state glass">No records found.</div>`;
+      });
+    }
+
+    function renderSettingsUI(container) {
+      container.innerHTML = `
+        <div class="settings-card">
+          <h4>💎 Market Rates & Config</h4>
+          <div id="adm-market-config-list" class="stack"><div class="small-note">Loading market data...</div></div>
+        </div>
+
+        <div class="manager-card">
+          <h4>➕ Add New Coin</h4>
+          <div class="stack">
+            <input type="text" id="new-c-name" class="input" placeholder="Coin Name">
+            <input type="text" id="new-c-tid" class="input" placeholder="Address / UID">
+            <div class="grid-2">
+              <input type="number" id="new-c-user" class="input" placeholder="User Rate">
+              <input type="number" id="new-c-admin" class="input" placeholder="Admin Rate">
+            </div>
+            <div class="grid-2">
+              <input type="number" id="new-c-limit" class="input" placeholder="Submit Limit">
+              <input type="number" id="new-c-admin-min" class="input" placeholder="Admin Rate From Qty">
+            </div>
+            <button class="cta-btn" onclick="addNewCoin()">Add Coin</button>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h4>💳 Payment Methods</h4>
+          <div id="adm-payment-list"></div>
+          <div class="grid-2" style="margin-top:12px;">
+            <input type="text" id="new-pay-name" class="input" placeholder="New Method">
+            <button class="cta-btn" onclick="addNewPayment()">Add</button>
+          </div>
+        </div>
+
+
+        <div class="settings-card">
+          <h4>🔐 VPN Panel</h4>
+          <div class="vpn-admin-link-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+              <div>
+                <b style="font-size:15px;">Open VPN admin panel</b><br>
+                <small class="muted">Manage VPN page from one quick access card.</small>
+              </div>
+              <a href="idk.html" class="cta-btn" style="width:auto;padding:12px 16px;text-decoration:none;display:inline-flex;align-items:center;animation:none;">Open</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h4>🔗 Social Links</h4>
+          <div class="stack">
+            <input type="text" id="adm-link-chan" class="input" placeholder="Channel Link">
+            <input type="text" id="adm-link-help" class="input" placeholder="Support Link">
+            <button class="cta-btn" onclick="updateAdmLinks()">Update Links</button>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h4>🎥 Tutorial Video</h4>
+          <div class="stack">
+            <input type="text" id="adm-tutorial-title" class="input" placeholder="Tutorial Title">
+            <input type="file" id="adm-tutorial-file" class="input" accept="video/*" onchange="handleTutorialFileSelected(event)">
+            <input type="text" id="adm-tutorial-url" class="input" placeholder="Paste YouTube link or use uploaded video URL">
+            <div id="adm-tutorial-upload-note" class="small-note">Choose a video from your phone and upload it, or paste a YouTube link and tap Save Link.</div>
+            <div class="grid-2">
+              <button class="cta-btn" onclick="uploadTutorialVideoFile()">Upload Video</button>
+              <button class="cta-btn" onclick="updateTutorialVideo()">Save Link</button>
+            </div>
+            <button class="danger-btn" style="width:100%;margin-top:10px;" onclick="removeTutorialVideo()">Remove Tutorial</button>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h4>🏆 Leaderboard Manager</h4>
+          <div id="adm-leaderboard-list"></div>
+        </div>
+
+        <div class="settings-card">
+          <h4>⚠️ Sales Stats</h4>
+          <button class="danger-btn" style="width:100%;padding:16px;" onclick="resetSalesStats()">Reset Sales Stats</button>
+        </div>`;
+      fetchAdminSettingsData();
+    }
+
+    function fetchAdminSettingsData() {
+      db.ref('leaderboard').on('value', snap => {
+        let html = '';
+        snap.forEach(u => {
+          const d = u.val() || {};
+          html += `
+            <div class="switch-row">
+              <div>
+                <b>@${d.user || 'unknown'}</b><br>
+                <small style="color:#6ee7b7;">${formatMoney(d.totalAmount)}</small>
+              </div>
+              <button class="danger-btn" onclick="deleteLeaderboardUser('${String(d.user || '').replace(/'/g, "\\'")}')">DEL</button>
+            </div>`;
+        });
+        document.getElementById('adm-leaderboard-list').innerHTML = html || `<div class="small-note">No users yet.</div>`;
+      });
+
+      db.ref('marketConfig').on('value', snap => {
+        let html = '';
+        snap.forEach(c => {
+          const v = c.val() || {};
+          html += `
+            <div class="manager-card">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
+                <b>💎 ${c.key}</b>
+                <label class="switch">
+                  <input type="checkbox" ${v.status !== false ? 'checked' : ''} onchange="db.ref('marketConfig/${c.key}').update({status:this.checked})">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="stack">
+                <input type="text" class="input" value="${v.transferId || ''}" onchange="db.ref('marketConfig/${c.key}').update({transferId:this.value})">
+                <div class="grid-2">
+                  <input type="number" class="input" value="${parseFloat(v.userRate || 0)}" onchange="db.ref('marketConfig/${c.key}').update({userRate:parseFloat(this.value||0)})" placeholder="User Rate">
+                  <input type="number" class="input" value="${parseFloat(v.adminRate || 0)}" onchange="db.ref('marketConfig/${c.key}').update({adminRate:parseFloat(this.value||0)})" placeholder="Admin Rate">
+                </div>
+                <div class="grid-2">
+                  <input type="number" class="input" value="${normalizeSubmitLimit(v.submitLimit)}" onchange="db.ref('marketConfig/${c.key}').update({submitLimit:normalizeSubmitLimit(this.value)})" placeholder="Submit Limit">
+                  <input type="number" class="input" value="${normalizeAdminMinQty(v.adminMinQty)}" onchange="db.ref('marketConfig/${c.key}').update({adminMinQty:normalizeAdminMinQty(this.value)})" placeholder="Admin Rate From Qty">
+                </div>
+                <button class="danger-btn" onclick="removeCoin('${String(c.key).replace(/'/g, "\\'")}')">Remove Coin</button>
+              </div>
+            </div>`;
+        });
+        document.getElementById('adm-market-config-list').innerHTML = html || `<div class="small-note">No market config found.</div>`;
+      });
+
+      db.ref('paymentMethods').on('value', snap => {
+        let html = '';
+        snap.forEach(p => {
+          const pv = p.val() || {};
+          html += `
+            <div class="switch-row">
+              <span>${p.key}</span>
+              <div style="display:flex;gap:10px;align-items:center;">
+                <label class="switch">
+                  <input type="checkbox" ${pv.status !== false ? 'checked' : ''} onchange="db.ref('paymentMethods/${p.key}').update({status:this.checked})">
+                  <span class="slider"></span>
+                </label>
+                <button class="danger-btn" onclick="removePayment('${String(p.key).replace(/'/g, "\\'")}')">🗑️</button>
+              </div>
+            </div>`;
+        });
+        document.getElementById('adm-payment-list').innerHTML = html || `<div class="small-note">No payment methods found.</div>`;
+      });
+
+      db.ref('settings/links').once('value').then(snap => {
+        const data = snap.val() || {};
+        const chan = document.getElementById('adm-link-chan');
+        const help = document.getElementById('adm-link-help');
+        if (chan) chan.value = data.channel || '';
+        if (help) help.value = data.help || '';
+      });
+
+      db.ref('settings/tutorial').once('value').then(snap => {
+        const data = snap.val() || {};
+        const title = document.getElementById('adm-tutorial-title');
+        const url = document.getElementById('adm-tutorial-url');
+        const note = document.getElementById('adm-tutorial-upload-note');
+        if (title) title.value = data.title || '';
+        if (url) url.value = data.url || '';
+        if (note) note.innerText = data.url ? 'Video already saved. You can replace it with a new upload or paste a different YouTube link.' : 'Choose a video from your phone and upload it, or paste a YouTube link and tap Save Link.';
+      });
+    }
+
+    function addNewCoin() {
+      const n = document.getElementById('new-c-name').value.trim();
+      const tid = document.getElementById('new-c-tid').value.trim();
+      const ur = parseFloat(document.getElementById('new-c-user').value || 0);
+      const ar = parseFloat(document.getElementById('new-c-admin').value || 0);
+      const sl = normalizeSubmitLimit(document.getElementById('new-c-limit').value);
+      const adminMinQty = normalizeAdminMinQty(document.getElementById('new-c-admin-min').value);
+      if (!n || !tid || !ur || !ar) return showToast('Fill all coin fields.');
+      db.ref('marketConfig/' + n).set({ transferId: tid, userRate: ur, adminRate: ar, submitLimit: sl, adminMinQty, status: true }).then(() => {
+        safeHaptic('notify', 'success');
+        document.getElementById('new-c-name').value = '';
+        document.getElementById('new-c-tid').value = '';
+        document.getElementById('new-c-user').value = '';
+        document.getElementById('new-c-admin').value = '';
+        document.getElementById('new-c-limit').value = '';
+        document.getElementById('new-c-admin-min').value = '';
+        showToast('Coin added successfully!');
+      });
+    }
+
+    function removeCoin(key) {
+      if (!confirm(`Remove ${key}?`)) return;
+      db.ref('marketConfig/' + key).remove();
+    }
+
+    function addNewPayment() {
+      const name = document.getElementById('new-pay-name').value.trim();
+      if (!name) return showToast('Enter payment method name.');
+      db.ref('paymentMethods/' + name).set({ status: true }).then(() => showToast('Payment method added!'));
+    }
+
+    function removePayment(key) {
+      if (!confirm(`Remove ${key}?`)) return;
+      db.ref('paymentMethods/' + key).remove();
+    }
+
+    function updateAdmLinks() {
+      db.ref('settings/links').set({
+        channel: document.getElementById('adm-link-chan').value.trim(),
+        help: document.getElementById('adm-link-help').value.trim()
+      }).then(() => showToast('Links updated!'));
+    }
+
+    function handleTutorialFileSelected(event) {
+      const file = event && event.target && event.target.files ? event.target.files[0] : null;
+      const note = document.getElementById('adm-tutorial-upload-note');
+      if (!file) {
+        if (note) note.innerText = 'Choose a video from your phone and upload it, or paste a YouTube link and tap Save Link.';
+        return;
+      }
+      if (!String(file.type || '').startsWith('video/')) {
+        event.target.value = '';
+        if (note) note.innerText = 'Only video files are allowed.';
+        return showToast('Please choose a video file.');
+      }
+      if (note) note.innerText = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+    }
+
+    function uploadTutorialVideoFile() {
+      const fileInput = document.getElementById('adm-tutorial-file');
+      const titleInput = document.getElementById('adm-tutorial-title');
+      const urlInput = document.getElementById('adm-tutorial-url');
+      const note = document.getElementById('adm-tutorial-upload-note');
+      const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+      if (!file) return showToast('Select a video file first.');
+      if (!String(file.type || '').startsWith('video/')) return showToast('Only video files are allowed.');
+      if (tutorialUploadInProgress) return showToast('Video upload already in progress.');
+      tutorialUploadInProgress = true;
+      const safeName = String(file.name || 'tutorial-video').replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = `tutorials/${Date.now()}_${safeName}`;
+      const ref = storage.ref(path);
+      const metadata = { contentType: file.type || 'video/mp4' };
+      const task = ref.put(file, metadata);
+      if (note) note.innerText = 'Uploading: 0%';
+
+      task.on('state_changed', snap => {
+        const total = parseFloat(snap.totalBytes || 0);
+        const done = parseFloat(snap.bytesTransferred || 0);
+        const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+        if (note) note.innerText = `Uploading: ${percent}%`;
+      }, err => {
+        tutorialUploadInProgress = false;
+        console.error(err);
+        if (note) note.innerText = 'Upload failed. Try again.';
+        showToast('Video upload failed. Check Firebase Storage rules.');
+      }, () => {
+        ref.getDownloadURL().then(url => {
+          const title = (titleInput && titleInput.value.trim()) || file.name.replace(/\.[^.]+$/, '') || 'Watch Tutorial';
+          const payload = {
+            title,
+            url,
+            storagePath: path,
+            mimeType: file.type || 'video/mp4',
+            originalName: file.name || '',
+            uploadedAt: Date.now()
+          };
+          return db.ref('settings/tutorial').set(payload).then(() => {
+            tutorialUploadInProgress = false;
+            currentTutorialData = payload;
+            if (urlInput) urlInput.value = url;
+            if (fileInput) fileInput.value = '';
+            if (note) note.innerText = 'Upload complete!';
+            tutorialSoundMuted = true;
+            const wrap = document.getElementById('tutorial-content-display');
+            if (wrap) {
+              wrap.innerHTML = getTutorialContentHtml(payload);
+              syncTutorialPlayerState();
+            }
+            showToast('Tutorial video uploaded!');
+          });
+        }).catch(err => {
+          tutorialUploadInProgress = false;
+          console.error(err);
+          if (note) note.innerText = 'Could not get download URL.';
+          showToast('Upload finished but video URL could not be created.');
+        });
+      });
+    }
+
+    function updateTutorialVideo() {
+      const title = document.getElementById('adm-tutorial-title').value.trim();
+      const url = document.getElementById('adm-tutorial-url').value.trim();
+      if (!url) return showToast('Paste a YouTube link or upload a video first.');
+      db.ref('settings/tutorial').update({ title: title || 'Watch Tutorial', url }).then(() => {
+        currentTutorialData = Object.assign({}, currentTutorialData || {}, { title: title || 'Watch Tutorial', url });
+        const wrap = document.getElementById('tutorial-content-display');
+        if (wrap) {
+          wrap.innerHTML = getTutorialContentHtml(currentTutorialData);
+          syncTutorialPlayerState();
+        }
+        showToast('Tutorial video updated!');
+      });
+    }
+
+    function updateOrderStatus(id, status, user, payable) {
+      db.ref('orders/' + id).once('value').then(orderSnap => {
+        const orderData = orderSnap.val() || {};
+        return db.ref('orders/' + id).update({ status }).then(() => {
+          if (status === 'completed' && user && user !== 'undefined') {
+            const ref = db.ref('leaderboard/' + user);
+            ref.once('value', snap => {
+              const data = snap.val() || { totalAmount: 0, user };
+              const newTotal = (parseFloat(data.totalAmount) || 0) + (parseFloat(payable) || 0);
+              const mergedProfile = {
+                nickname: orderData.nickname || data.nickname || user,
+                username: orderData.username || data.username || user,
+                photo: orderData.photo || data.photo || ''
+              };
+              ref.update({ 
+                totalAmount: newTotal, 
+                user,
+                nickname: mergedProfile.nickname,
+                username: mergedProfile.username,
+                photo: mergedProfile.photo
+              });
+              if (mergedProfile.username) {
+                db.ref('userProfiles/' + mergedProfile.username).update(mergedProfile);
+              }
+            });
+          }
+          safeHaptic('notify', 'success');
+          showToast('Order ' + status + '!');
+          renderAdminData();
+        });
+      }).catch(err => showToast(err.message));
+    }
+
+    function deleteOrder(id) {
+      if (!confirm('Delete this order?')) return;
+      db.ref('orders/' + id).remove().then(() => showToast('Order deleted.'));
+    }
+
+    function deleteLeaderboardUser(username) {
+      if (!confirm(`Remove @${username} from leaderboard?`)) return;
+      db.ref('leaderboard/' + username).remove().then(() => showToast('User removed!'));
+    }
+
+    function resetSalesStats() {
+      if (!confirm('Reset Stats?')) return;
+      db.ref('orders').once('value').then(snap => {
+        let total = 0;
+        Object.values(snap.val() || {}).forEach(o => {
+          if (o.status === 'completed') total += parseFloat(o.payable || 0);
+        });
+        return db.ref('stats_reset').set({ resetAmount: total, timestamp: Date.now() });
+      }).then(() => showToast('Sales stats reset snapshot saved!'));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      bootLoader();
+      initTelegramUser();
+      initializeDataFetching();
+      fetchHistory();
+      fetchLeaderboard();
+      startAdminEngine();
+    });
+  </script>
+</body>
+</html>
