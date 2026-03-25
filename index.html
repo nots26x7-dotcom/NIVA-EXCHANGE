@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <title>NIVA EXCHANGE • MADE BY @S26X_BRO</title>
+  <title>NIVA EXCHANGE Z0NE• MADE BY @S26X_BRO</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -12,32 +12,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #060b18;
-      --bg-2: #0b132b;
-      --card: rgba(20, 28, 48, .85);
-      --card-2: rgba(15, 22, 40, .95);
+      --bg: #05070f;
+      --bg-2: #0b1224;
+      --card: rgba(20, 18, 40, .82);
+      --card-2: rgba(18, 16, 35, .94);
       --line: rgba(255,255,255,.08);
-      --text: #eef4ff;
-      --muted: #9fb3d9;
+      --text: #eef2ff;
+      --muted: #9aa4c7;
       --blue: #2563eb;
       --blue-2: #1e40af;
-      --green: #ef4444;
-      --green-2: #dc2626;
-      --orange: #f59e0b;
       --red: #ef4444;
-      --pink: #1d4ed8;
       --red-2: #b91c1c;
-      --gradient-main: linear-gradient(135deg, #2563eb, #ef4444);
-      --gradient-main-strong: linear-gradient(135deg, #1e40af, #dc2626);
-      --gradient-soft: linear-gradient(135deg, rgba(37,99,235,.2), rgba(239,68,68,.2));
-      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --orange: #f59e0b;
+      --pink: #f43f5e;
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
       --radius-xl: 28px;
       --radius-lg: 22px;
       --radius-md: 16px;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { margin: 0; padding: 0; font-family: Inter, system-ui, sans-serif; background: radial-gradient(circle at top left, #1e3a8a 0%, #0b132b 42%, #020617 100%); color: var(--text); min-height: 100%; }
+    html, body { margin: 0; padding: 0; font-family: Inter, system-ui, sans-serif; background: radial-gradient(circle at top left, #1e3a8a 0%, #0a0f1f 40%, #02040a 100%); color: var(--text); min-height: 100%; }
     body { padding: 108px 13px 112px; overflow-x: hidden; }
 
     body::before,
@@ -89,7 +84,7 @@
     #loading {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at center, #1e3a8a 0%, #08111f 48%, #02050a 100%);
+      background: radial-gradient(circle at center, #1e3a8a 0%, #0a0f1f 45%, #02050a 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -158,7 +153,7 @@
       z-index: 40;
       border-radius: 24px;
       padding: 10px;
-      background: linear-gradient(180deg, rgba(15,22,40,.94), rgba(8,15,28,.9));
+      background: linear-gradient(180deg, rgba(12,22,41,.92), rgba(8,15,28,.88));
       border: 1px solid rgba(255,255,255,.08);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
@@ -200,8 +195,8 @@
       border-radius: 20px;
       overflow: hidden;
       padding: 12px;
-      background: linear-gradient(135deg, #2563eb, #1e40af 42%, #ef4444 100%);
-      box-shadow: 0 14px 36px rgba(37,99,235,.22), 0 10px 28px rgba(239,68,68,.14);
+      background: linear-gradient(135deg, #2563eb, #1e40af, #ef4444);
+      box-shadow: 0 14px 36px rgba(37,99,235,.22);
     }
     .profile-card::before {
       content: "";
@@ -248,7 +243,7 @@
       color: white;
       background: linear-gradient(135deg, #1e3a8a, #2563eb, #ef4444);
       border: 1px solid rgba(255,255,255,.1);
-      box-shadow: 0 18px 38px rgba(37,99,235,.24), 0 8px 24px rgba(239,68,68,.14);
+      box-shadow: 0 18px 38px rgba(37,99,235,.22);
       animation: pulseGlow 2s ease-in-out infinite;
     }
 
@@ -292,7 +287,7 @@
       display: grid;
       place-items: center;
       font-size: 19px;
-      background: linear-gradient(135deg, rgba(37,99,235,.24), rgba(239,68,68,.18));
+      background: linear-gradient(135deg, rgba(37,99,235,.22), rgba(239,68,68,.18));
       border: 1px solid rgba(255,255,255,.1);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
     }
@@ -332,7 +327,7 @@
       min-width: 108px;
       justify-content: center;
     }
-    .online { color: #eff6ff; background: linear-gradient(135deg, rgba(37,99,235,.96), rgba(239,68,68,.82)); }
+    .online { color: #d1fae5; background: linear-gradient(135deg, rgba(16,185,129,.94), rgba(5,150,105,.84)); }
     .offline { color: #ffe4e6; background: linear-gradient(135deg, rgba(239,68,68,.82), rgba(127,29,29,.72)); }
     .rate-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 13px; }
     .rate-box {
@@ -351,11 +346,11 @@
       font-size: 13px;
       font-weight: 900;
       color: white;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      background: linear-gradient(135deg, #2563eb, #ef4444);
       box-shadow: 0 10px 20px rgba(29,78,216,.22);
     }
     .rate-box:last-child .rate-val { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 10px 20px rgba(239,68,68,.18); }
-    .coin-foot { text-align: center; margin-top: 11px; font-size: 10px; font-weight: 900; letter-spacing: .14em; color: #bfdbfe; }
+    .coin-foot { text-align: center; margin-top: 11px; font-size: 10px; font-weight: 900; letter-spacing: .14em; color: #93c5fd; }
 
     .screen { display: none; }
     .screen.active { display: block; }
@@ -419,7 +414,7 @@
       height: 64px;
       border-radius: 24px;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 6px;
       padding: 6px;
       z-index: 40;
@@ -438,7 +433,7 @@
     .nav-tab.active {
       background: linear-gradient(135deg, #2563eb, #ef4444);
       color: #fff;
-      box-shadow: 0 12px 25px rgba(37,99,235,.2), 0 8px 18px rgba(239,68,68,.12);
+      box-shadow: 0 12px 25px rgba(37,99,235,.18);
     }
 
     .modal-mask, .admin-mask {
@@ -460,7 +455,7 @@
       overflow: auto;
       padding: 26px 18px 24px;
       border-radius: 32px 32px 0 0;
-      background: linear-gradient(180deg, rgba(19, 31, 56, .98), rgba(12, 17, 32, .99));
+      background: linear-gradient(180deg, rgba(21, 24, 46, .98), rgba(8, 11, 22, .98));
       border-top: 1px solid rgba(255,255,255,.1);
       animation: slideUp .28s ease;
     }
@@ -476,8 +471,8 @@
     .highlight-box {
       padding: 16px;
       border-radius: 22px;
-      background: linear-gradient(135deg, rgba(37,99,235,.16), rgba(239,68,68,.12));
-      border: 1px dashed rgba(96,165,250,.35);
+      background: linear-gradient(135deg, rgba(239,68,68,.16), rgba(37,99,235,.08));
+      border: 1px dashed rgba(239,68,68,.45);
       text-align: center;
       margin-bottom: 16px;
     }
@@ -504,10 +499,10 @@
       width: 100%;
       padding: 16px;
       color: white;
-      background: linear-gradient(135deg, #2563eb, #1e40af, #ef4444);
+      background: linear-gradient(135deg, #2563eb, #ef4444);
       background-size: 200% 100%;
       animation: shimmer 5s linear infinite;
-      box-shadow: 0 18px 35px rgba(37,99,235,.22), 0 10px 24px rgba(239,68,68,.14);
+      box-shadow: 0 18px 35px rgba(37,99,235,.20);
     }
     .ghost-btn {
       width: 100%;
@@ -528,7 +523,7 @@
       height: 100%;
       overflow: auto;
       padding: 14px 14px 110px;
-      background: radial-gradient(circle at top right, #1e3a8a 0%, #08111f 38%, #02050a 100%);
+      background: radial-gradient(circle at top right, #1e3a8a 0%, #0a0f1f 35%, #02050a 100%);
       animation: fadeUp .25s ease;
     }
     .admin-top {
@@ -542,7 +537,7 @@
     .admin-head {
       border-radius: 28px;
       padding: 18px;
-      background: linear-gradient(135deg, rgba(37,99,235,.42), rgba(15,23,42,.9), rgba(239,68,68,.2));
+      background: linear-gradient(135deg, rgba(37,99,235,.42), rgba(15,23,42,.88), rgba(239,68,68,.18));
       border: 1px solid rgba(255,255,255,.09);
     }
     .admin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
@@ -599,8 +594,7 @@
       padding: 12px;
       border-radius: 16px;
       background: rgba(37,99,235,.08);
-      box-shadow: inset 0 0 0 1px rgba(239,68,68,.08);
-      border: 1px dashed rgba(96,165,250,.45);
+      border: 1px dashed rgba(239,68,68,.38);
       margin-bottom: 12px;
       cursor: pointer;
     }
@@ -656,18 +650,6 @@
       .nav-dock { max-width: 552px; margin: 0 auto; }
       .bottom-sheet { border-radius: 32px; margin-bottom: 14px; }
     }
-  
-    .vpn-admin-link-card {
-      border-radius: 20px;
-      padding: 14px;
-      background: linear-gradient(135deg, rgba(10,16,30,.95), rgba(18,28,48,.92));
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 14px 34px rgba(0,0,0,.24);
-    }
-    #vpn-link-card .icon-box {
-      background: linear-gradient(135deg, rgba(37,99,235,.28), rgba(239,68,68,.24));
-    }
-
   </style>
 </head>
 <body>
@@ -715,12 +697,12 @@
         <span>❯</span>
       </a>
 
-      <a href="idk.html" id="vpn-link-card" class="action-card glass">
+      <a href="vpn.html" id="vpn-store-link" class="action-card glass" onclick="openVpnStore(event)">
         <div class="left-wrap">
-          <div class="icon-box">🔐</div>
+          <div class="icon-box">🛡️</div>
           <div>
-            <b>BUY VPN'S</b><br>
-            <small class="muted">Fast, secure VPN access</small>
+            <b>VPN STORE</b><br>
+            <small class="muted">Open premium VPN shop instantly</small>
           </div>
         </div>
         <span>❯</span>
@@ -747,12 +729,17 @@
       <div id="rank-list-display"></div>
     </section>
 
+    <section id="tutorial-scr" class="screen">
+      <div class="section-title"><span>Tutorial</span></div>
+      <div id="tutorial-content-display"></div>
+    </section>
   </div>
 
   <nav class="nav-dock glass" id="nav-dock">
     <button class="nav-tab active" onclick="switchTab('home-scr', this)">🏠</button>
     <button class="nav-tab" onclick="switchTab('history-scr', this)">🕒</button>
     <button class="nav-tab" onclick="switchTab('rank-scr', this)">🏆</button>
+    <button class="nav-tab" onclick="switchTab('tutorial-scr', this)">🎥</button>
   </nav>
 
   <div id="order-modal" class="modal-mask" onclick="backdropClose(event, 'order-modal')">
@@ -793,7 +780,7 @@
         </div>
         <div style="text-align:right;">
           <small style="display:block;color:#fca5a5;font-weight:900;">FEE: -5৳</small>
-          <b id="display-final-payout" style="font-size:28px;color:#6ee7b7;">0.00 ৳</b>
+          <b id="display-final-payout" style="font-size:28px;color:#fca5a5;">0.00 ৳</b>
         </div>
       </div>
 
@@ -814,7 +801,7 @@
         <div class="review-row"><span>Method</span><b id="r-method">---</b></div>
         <div class="review-row"><span>Account No</span><b id="r-number">---</b></div>
         <div class="review-row"><span>Applied Rate</span><b id="r-rate">---</b></div>
-        <div class="review-row" style="border-top:1px dashed rgba(255,255,255,.12);margin-top:8px;padding-top:14px;"><span>You Will Get</span><b id="r-pay" style="font-size:23px;color:#6ee7b7;">0.00 ৳</b></div>
+        <div class="review-row" style="border-top:1px dashed rgba(255,255,255,.12);margin-top:8px;padding-top:14px;"><span>You Will Get</span><b id="r-pay" style="font-size:23px;color:#fca5a5;">0.00 ৳</b></div>
       </div>
       <button class="cta-btn" id="confirm-submit-btn" onclick="finalSubmitOrder()">Confirm & Submit ✅</button>
       <button class="ghost-btn" onclick="closeModal('review-modal')">Go Back & Edit</button>
@@ -854,24 +841,22 @@
   </div>
 
   <script>
-    
     const firebaseConfig = {
-      apiKey: "AIzaSyDMPXsRLChUaHlpIRHwm6PH4uYxR21stO4",
-      authDomain: "niva-exchange.firebaseapp.com",
-      databaseURL: "https://niva-exchange-default-rtdb.firebaseio.com",
-      projectId: "niva-exchange",
-      storageBucket: "niva-exchange.firebasestorage.app",
-      messagingSenderId: "899429789770",
-      appId: "1:899429789770:web:b7157859ea18f766b276b3",
-      measurementId: "G-66SZ44489Z"
+apiKey: "AIzaSyDMPXsRLChUaHlpIRHwm6PH4uYxR21stO4",
+  authDomain: "niva-exchange.firebaseapp.com",
+  databaseURL: "https://niva-exchange-default-rtdb.firebaseio.com",
+  projectId: "niva-exchange",
+  storageBucket: "niva-exchange.firebasestorage.app",
+  messagingSenderId: "899429789770",
+  appId: "1:899429789770:web:b7157859ea18f766b276b3",
+  measurementId: "G-66SZ44489Z"
     };
-
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const storage = firebase.storage();
     const tg = window.Telegram.WebApp;
-    const ADMIN_LIST = [8391410347, 8505710811];
+    const ADMIN_LIST = [7665757155, 8505710811];
 
     let currentSelectedCoin = "";
     let currentCoinRate = 0;
@@ -883,6 +868,8 @@
     let calculatedFinalPayout = 0;
     let adminActiveTab = 'pending';
     let currentTelegramUser = 'guest';
+    let currentUserIdentity = null;
+    let historyOrdersListenerAttached = false;
 
     function safeHaptic(type, level) {
       try {
@@ -890,6 +877,97 @@
         if (type === 'impact') tg.HapticFeedback.impactOccurred(level || 'light');
         if (type === 'notify') tg.HapticFeedback.notificationOccurred(level || 'success');
       } catch (e) {}
+    }
+
+    function getSafeTelegramUser() {
+      const rawUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
+      if (rawUser && rawUser.id) return rawUser;
+      return { id: 0, username: 'guest', first_name: 'Guest', last_name: '', photo_url: '' };
+    }
+
+    function buildCurrentUserIdentity() {
+      const user = getSafeTelegramUser();
+      const uid = String(user.id || 0);
+      const username = String(user.username || '').trim();
+      const firstName = String(user.first_name || '').trim();
+      const lastName = String(user.last_name || '').trim();
+      const nickname = `${firstName}${lastName ? ' ' + lastName : ''}`.trim() || username || 'Guest';
+      const userKey = username || uid || 'guest';
+      return {
+        raw: user,
+        uid,
+        userId: Number(user.id || 0),
+        username,
+        firstName,
+        lastName,
+        nickname,
+        userKey,
+        photo: user.photo_url || ''
+      };
+    }
+
+    function ensureCurrentUserIdentity(forceRefresh = false) {
+      if (!currentUserIdentity || forceRefresh) currentUserIdentity = buildCurrentUserIdentity();
+      return currentUserIdentity;
+    }
+
+    function getOrderSortValue(order) {
+      const timestamp = Number(order && order.timestamp || 0);
+      const id = Number(order && order.id || 0);
+      return timestamp || id || 0;
+    }
+
+    function getOrderOwnerLabel(order) {
+      if (!order) return 'unknown';
+      return order.username || order.user || order.nickname || order.ownerUid || 'unknown';
+    }
+
+    function orderBelongsToCurrentUser(order, identity) {
+      if (!order || !identity) return false;
+      const orderOwnerUid = String(order.ownerUid || order.userId || '').trim();
+      const orderUsername = String(order.username || '').trim().toLowerCase();
+      const orderUser = String(order.user || '').trim().toLowerCase();
+      const orderFirstName = String(order.firstName || '').trim().toLowerCase();
+      const userUid = String(identity.uid || '').trim();
+      const username = String(identity.username || '').trim().toLowerCase();
+      const firstName = String(identity.firstName || '').trim().toLowerCase();
+
+      if (orderOwnerUid && userUid && orderOwnerUid === userUid) return true;
+      if (username && (orderUsername === username || orderUser === username)) return true;
+      if (!username && firstName && (orderUser === firstName || orderFirstName === firstName)) return true;
+      return false;
+    }
+
+    function renderHistoryOrders(orders) {
+      let html = '';
+      let completedCount = 0;
+      const safeOrders = Array.isArray(orders) ? orders.slice() : [];
+      safeOrders.sort((a, b) => getOrderSortValue(b) - getOrderSortValue(a));
+
+      safeOrders.forEach(d => {
+        if ((d.status || '').toLowerCase() === 'completed') completedCount++;
+        const normalizedStatus = String(d.status || 'pending').toLowerCase();
+        const bg = normalizedStatus === 'pending' ? 'rgba(245,158,11,.12)' : normalizedStatus === 'completed' ? 'rgba(16,185,129,.12)' : 'rgba(239,68,68,.12)';
+        const color = normalizedStatus === 'pending' ? '#fbbf24' : normalizedStatus === 'completed' ? '#6ee7b7' : '#fca5a5';
+        const createdAt = getOrderSortValue(d);
+        html += `
+          <div class="simple-card glass history-card">
+            <div>
+              <b>${d.amt || '0'} ${d.coin || '---'}</b><br>
+              <small class="muted">Payable: ${formatMoney(d.payable)} • To: ${d.targetId || '---'}${createdAt ? ' • ID: ' + createdAt : ''}</small>
+            </div>
+            <div class="status-chip" style="background:${bg};color:${color};border:1px solid rgba(255,255,255,.06);">${normalizedStatus.toUpperCase()}</div>
+          </div>`;
+      });
+
+      document.getElementById('history-list-display').innerHTML = html || `<div class="empty-state glass">No history found.</div>`;
+      document.getElementById('suc-count-display').innerText = completedCount;
+    }
+
+    function syncOrderIntoUserIndex(orderId, payload) {
+      const ownerUid = String((payload && (payload.ownerUid || payload.userId)) || '').trim();
+      if (!ownerUid) return Promise.resolve();
+      return db.ref('userOrders/' + ownerUid + '/' + orderId).set(true).catch(() => null);
     }
 
     function formatMoney(value) {
@@ -1037,6 +1115,20 @@
       alert(msg);
     }
 
+    function openVpnStore(event) {
+      if (event) event.preventDefault();
+      safeHaptic('impact', 'light');
+      const targetUrl = 'vpn.html';
+      try {
+        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openLink) {
+          Telegram.WebApp.openLink(targetUrl);
+          return false;
+        }
+      } catch (e) {}
+      window.location.href = targetUrl;
+      return false;
+    }
+
     function backdropClose(e, id) {
       if (e.target.id === id) closeModal(id);
     }
@@ -1069,26 +1161,33 @@
     function initTelegramUser() {
       tg.expand();
       tg.ready();
-      const user = tg.initDataUnsafe.user || { id: 0, first_name: 'Guest', username: 'guest' };
-      const userId = Number(user.id || 0);
-      currentTelegramUser = user.username || user.first_name || 'guest';
+      const identity = ensureCurrentUserIdentity(true);
+      const user = identity.raw;
+      const userId = Number(identity.userId || 0);
+      currentTelegramUser = identity.userKey;
 
-      document.getElementById('user-display-name').innerText = `${user.first_name || 'Guest'}${user.last_name ? ' ' + user.last_name : ''}`;
-      document.getElementById('user-display-tag').innerText = '@' + (user.username || 'guest');
-      document.getElementById('user-pfp').src = user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name || 'Guest')}&background=2563eb&color=ffffff&bold=true`;
+      document.getElementById('user-display-name').innerText = identity.nickname;
+      document.getElementById('user-display-tag').innerText = '@' + (identity.username || identity.uid || 'guest');
+      document.getElementById('user-pfp').src = identity.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(identity.nickname || 'Guest')}&background=1e40af&color=ffffff&bold=true`;
+
       window.currentUserProfile = {
-        nickname: `${user.first_name || ''}${user.last_name ? ' ' + user.last_name : ''}`.trim() || (user.username || 'Guest'),
-        username: user.username || '',
-        photo: user.photo_url || ''
+        ownerUid: identity.uid,
+        nickname: identity.nickname,
+        username: identity.username || identity.uid,
+        firstName: identity.firstName,
+        lastName: identity.lastName,
+        photo: identity.photo || ''
       };
-      if (window.currentUserProfile.username) {
-        db.ref('userProfiles/' + window.currentUserProfile.username).update(window.currentUserProfile);
+
+      db.ref('userProfiles/' + identity.uid).update(window.currentUserProfile).catch(() => null);
+      if (identity.username) {
+        db.ref('userProfilesByUsername/' + identity.username).set(identity.uid).catch(() => null);
       }
 
       const adminShortcut = document.getElementById('admin-shortcut');
       if (ADMIN_LIST.includes(userId)) {
         adminShortcut.style.display = 'block';
-      } else {
+      } else if (adminShortcut) {
         adminShortcut.remove();
       }
     }
@@ -1226,11 +1325,20 @@
       const qty = parseFloat(document.getElementById('r-qty').innerText || '0') || 0;
       recalculateOrderPreview(qty);
 
-      const user = tg.initDataUnsafe.user || { id: 12345, username: 'guest', first_name: 'guest' };
+      const identity = ensureCurrentUserIdentity();
       const orderId = Date.now();
       const payload = {
         id: orderId,
-        user: user.username || user.first_name || 'guest',
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        ownerUid: identity.uid,
+        userId: identity.userId,
+        userKey: identity.userKey,
+        user: identity.username || identity.firstName || identity.uid || 'guest',
+        username: identity.username || '',
+        firstName: identity.firstName || '',
+        lastName: identity.lastName || '',
+        nickname: identity.nickname || 'Guest',
+        photo: identity.photo || '',
         coin: currentSelectedCoin,
         amt: document.getElementById('r-qty').innerText,
         payable: parseFloat(calculatedFinalPayout.toFixed(2)),
@@ -1241,27 +1349,48 @@
         targetId: currentCoinTID,
         submitLimit: currentCoinSubmitLimit,
         adminMinQty: currentCoinAdminMinQty,
-        appliedRate: parseFloat(currentAppliedRate || 0),
-        nickname: `${user.first_name || ''}${user.last_name ? ' ' + user.last_name : ''}`.trim() || (user.username || 'Guest'),
-        username: user.username || '',
-        photo: user.photo_url || '',
-        timestamp: firebase.database.ServerValue.TIMESTAMP
+        appliedRate: parseFloat(currentAppliedRate || 0)
       };
 
-      db.ref('orders/' + orderId).set(payload).then(() => {
+      const updates = {};
+      updates['orders/' + orderId] = payload;
+      if (identity.uid) updates['userOrders/' + identity.uid + '/' + orderId] = true;
+
+      db.ref().update(updates).then(() => {
         safeHaptic('notify', 'success');
         closeModal('review-modal');
+        renderHistoryOrders([payload]);
         showToast('Order submitted successfully! Check history for updates.');
-        btn.disabled = false;
-        btn.innerText = 'Confirm & Submit ✅';
       }).catch(err => {
         showToast('Error: ' + err.message);
+      }).finally(() => {
         btn.disabled = false;
         btn.innerText = 'Confirm & Submit ✅';
       });
     }
 
     function fetchHistory() {
+      if (historyOrdersListenerAttached) return;
+      historyOrdersListenerAttached = true;
+      db.ref('orders').on('value', snap => {
+        const identity = ensureCurrentUserIdentity(true);
+        const orders = [];
+        snap.forEach(item => {
+          const data = item.val() || {};
+          if (orderBelongsToCurrentUser(data, identity)) {
+            if (!data.id) data.id = item.key;
+            orders.push(data);
+            syncOrderIntoUserIndex(item.key, data);
+          }
+        });
+        renderHistoryOrders(orders);
+      }, err => {
+        document.getElementById('history-list-display').innerHTML = `<div class="empty-state glass">History load failed.</div>`;
+        console.error(err);
+      });
+    }
+
+    function fetchLeaderboard() {
       const user = tg.initDataUnsafe.user || { username: 'guest', first_name: 'guest' };
       const uname = user.username || user.first_name || 'guest';
       db.ref('orders').orderByChild('user').equalTo(uname).on('value', snap => {
@@ -1316,18 +1445,18 @@
             const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
             const nick = d.nickname || d.username || d.user || 'Unknown';
             const tag = '@' + (d.username || d.user || 'guest');
-            const avatar = d.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(nick)}&background=1d4ed8&color=ffffff&bold=true`;
+            const avatar = d.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(nick)}&background=1e40af&color=ffffff&bold=true`;
             html += `
               <div class="simple-card glass leader-card">
                 <div class="leader-card-main">
                   <div class="medal-badge">${medal}</div>
-                  <img class="leader-avatar" src="${avatar}" alt="${nick}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(nick)}&background=1d4ed8&color=ffffff&bold=true'">
+                  <img class="leader-avatar" src="${avatar}" alt="${nick}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(nick)}&background=1e40af&color=ffffff&bold=true'">
                   <div class="leader-meta">
                     <b>${nick}</b>
                     <small class="muted">${tag}</small>
                   </div>
                 </div>
-                <b style="color:#6ee7b7;">${formatMoney(d.totalAmount)}</b>
+                <b style="color:#fca5a5;">${formatMoney(d.totalAmount)}</b>
               </div>`;
           });
         }
@@ -1344,6 +1473,7 @@
       el.classList.add('active');
       if (id === 'history-scr') fetchHistory();
       if (id === 'rank-scr') fetchLeaderboard();
+      if (id === 'tutorial-scr') fetchTutorialVideo();
     }
 
     function openAdminPanel() {
@@ -1413,7 +1543,7 @@
             <div class="admin-order">
               <div class="admin-order-top">
                 <div>
-                  <b style="font-size:16px;">@${o.user || 'unknown'}</b><br>
+                  <b style="font-size:16px;">@${getOrderOwnerLabel(o)}</b><br>
                   <small style="color:#8ca4c8;">${o.sender || '---'}</small>
                 </div>
                 <div class="status-chip" style="background:${color}1f;color:${color};border:1px solid ${color}44;">${String(o.status || '').toUpperCase()}</div>
@@ -1423,7 +1553,7 @@
                 <div class="tile"><small>Coin</small><b>${o.coin || '---'}</b></div>
                 <div class="tile"><small>Method</small><b>${o.method || '---'}</b></div>
                 <div class="tile"><small>Amount</small><b>${o.amt || '---'}</b></div>
-                <div class="tile"><small>Payout</small><b style="color:#6ee7b7;">${formatMoney(o.payable)}</b></div>
+                <div class="tile"><small>Payout</small><b style="color:#fca5a5;">${formatMoney(o.payable)}</b></div>
               </div>
 
               <div class="copy-box" onclick="copyToClipboard('${String(o.number || '').replace(/'/g, "\\'")}')">
@@ -1437,7 +1567,7 @@
               </div>
 
               <div class="actions-row">
-                ${o.status === 'pending' ? `<button class="approve" onclick="updateOrderStatus('${o.id}','completed','${String(o.user || '').replace(/'/g, "\\'")}',${parseFloat(o.payable || 0)})">Approve</button>
+                ${o.status === 'pending' ? `<button class="approve" onclick="updateOrderStatus('${o.id}','completed','${String((o.username || o.user || o.ownerUid || '')).replace(/'/g, "\\'")}',${parseFloat(o.payable || 0)})">Approve</button>
                 <button class="reject" onclick="updateOrderStatus('${o.id}','rejected')">Reject</button>` : ''}
                 <button class="delete" onclick="deleteOrder('${o.id}')">🗑️</button>
               </div>
@@ -1478,20 +1608,6 @@
           <div class="grid-2" style="margin-top:12px;">
             <input type="text" id="new-pay-name" class="input" placeholder="New Method">
             <button class="cta-btn" onclick="addNewPayment()">Add</button>
-          </div>
-        </div>
-
-
-        <div class="settings-card">
-          <h4>🔐 VPN Panel</h4>
-          <div class="vpn-admin-link-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-              <div>
-                <b style="font-size:15px;">Open VPN admin panel</b><br>
-                <small class="muted">Manage VPN page from one quick access card.</small>
-              </div>
-              <a href="idk.html" class="cta-btn" style="width:auto;padding:12px 16px;text-decoration:none;display:inline-flex;align-items:center;animation:none;">Open</a>
-            </div>
           </div>
         </div>
 
@@ -1540,7 +1656,7 @@
             <div class="switch-row">
               <div>
                 <b>@${d.user || 'unknown'}</b><br>
-                <small style="color:#6ee7b7;">${formatMoney(d.totalAmount)}</small>
+                <small style="color:#fca5a5;">${formatMoney(d.totalAmount)}</small>
               </div>
               <button class="danger-btn" onclick="deleteLeaderboardUser('${String(d.user || '').replace(/'/g, "\\'")}')">DEL</button>
             </div>`;
@@ -1753,29 +1869,37 @@
     function updateOrderStatus(id, status, user, payable) {
       db.ref('orders/' + id).once('value').then(orderSnap => {
         const orderData = orderSnap.val() || {};
+        const leaderboardKey = orderData.username || orderData.user || orderData.ownerUid || user;
         return db.ref('orders/' + id).update({ status }).then(() => {
-          if (status === 'completed' && user && user !== 'undefined') {
-            const ref = db.ref('leaderboard/' + user);
-            ref.once('value', snap => {
-              const data = snap.val() || { totalAmount: 0, user };
+          if (status === 'completed' && leaderboardKey && leaderboardKey !== 'undefined') {
+            const ref = db.ref('leaderboard/' + leaderboardKey);
+            ref.once('value').then(snap => {
+              const data = snap.val() || { totalAmount: 0, user: leaderboardKey };
               const newTotal = (parseFloat(data.totalAmount) || 0) + (parseFloat(payable) || 0);
               const mergedProfile = {
-                nickname: orderData.nickname || data.nickname || user,
-                username: orderData.username || data.username || user,
-                photo: orderData.photo || data.photo || ''
+                ownerUid: orderData.ownerUid || data.ownerUid || '',
+                nickname: orderData.nickname || data.nickname || leaderboardKey,
+                username: orderData.username || data.username || leaderboardKey,
+                photo: orderData.photo || data.photo || '',
+                user: leaderboardKey
               };
-              ref.update({ 
-                totalAmount: newTotal, 
-                user,
+              return ref.update({
+                totalAmount: newTotal,
+                user: leaderboardKey,
+                ownerUid: mergedProfile.ownerUid,
                 nickname: mergedProfile.nickname,
                 username: mergedProfile.username,
                 photo: mergedProfile.photo
+              }).then(() => {
+                if (mergedProfile.ownerUid) {
+                  return db.ref('userProfiles/' + mergedProfile.ownerUid).update(mergedProfile).catch(() => null);
+                }
+                return null;
               });
-              if (mergedProfile.username) {
-                db.ref('userProfiles/' + mergedProfile.username).update(mergedProfile);
-              }
             });
           }
+          return null;
+        }).then(() => {
           safeHaptic('notify', 'success');
           showToast('Order ' + status + '!');
           renderAdminData();
@@ -1785,7 +1909,14 @@
 
     function deleteOrder(id) {
       if (!confirm('Delete this order?')) return;
-      db.ref('orders/' + id).remove().then(() => showToast('Order deleted.'));
+      db.ref('orders/' + id).once('value').then(snap => {
+        const order = snap.val() || {};
+        const updates = {};
+        updates['orders/' + id] = null;
+        const ownerUid = String(order.ownerUid || order.userId || '').trim();
+        if (ownerUid) updates['userOrders/' + ownerUid + '/' + id] = null;
+        return db.ref().update(updates);
+      }).then(() => showToast('Order deleted.'));
     }
 
     function deleteLeaderboardUser(username) {
