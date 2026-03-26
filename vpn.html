@@ -1016,27 +1016,14 @@
             document.getElementById(pageId + '-page').classList.remove('hidden');
         };
 
-        window.rejectOrder = (id) => {
-            Swal.fire({
-                title: 'Reject Order?',
-                text: 'User will see this order as rejected.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ff2b5b',
-                background: '#0b1120',
-                color: '#e5eefc',
-                confirmButtonText: 'Yes, Reject'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    update(ref(db, `orders/${id}`), { st: "Rejected" }).then(() => Swal.fire({
-                        title:'Rejected!',
-                        icon:'success',
-                        background:'#0b1120',
-                        color:'#e5eefc'
-                    }));
-                }
-            });
-        };
+       window.rejectOrder = (id) => {
+    update(ref(db, `orders/${id}`), { st: "Rejected" }).then(() => Swal.fire({
+        title: 'Rejected!',
+        icon: 'success',
+        background: '#0b1120',
+        color: '#e5eefc'
+    }));
+};
 
         window.saveV = (id) => update(ref(db, `vpns/${id}`), {
             p1n: document.getElementById(`p1n-${id}`).value,
