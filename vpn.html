@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>NIVA EXCHANGE VPN</title>
+    <title>NIVA EXCHANGE VPN ZONE</title>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -634,13 +634,13 @@
 
     <div id="loading-screen">
         <div class="loader-ring"></div>
-        <p class="mt-4 font-bold text-slate-400 text-sm tracking-widest animate-pulse uppercase">NIVA EXCHANGE VPN STORE</p>
+        <p class="mt-4 font-bold text-slate-400 text-sm tracking-widest animate-pulse uppercase">NIVA EXCHANGE VPN ZONE</p>
     </div>
 
     <div class="max-w-md mx-auto relative">
         <header class="p-6 flex justify-between items-center">
             <h1 class="font-black text-2xl tracking-tighter italic header-brand">
-                NIVA EXCHANGE<span class="brand-accent">VPN-STORE</span>
+                NIVA EXCHANGE<span class="brand-accent">VPN-ZONE</span>
             </h1>
             <div class="flex items-center gap-2">
                 <button onclick="goBack()" class="mini-icon-btn" aria-label="Go back to home page">
@@ -711,12 +711,15 @@
         <div class="p-4 admin-topbar">
             <div class="adm-nav">
                 <button onclick="admTab('pending', this)" class="adm-tab adm-tab-active">PENDING (<span id="p-count">0</span>)</button>
+                <button onclick="admTab('history', this)" class="adm-tab">HISTORY</button>
                 <button onclick="admTab('stock', this)" class="adm-tab">STOCK MGMT</button>
                 <button onclick="admTab('settings', this)" class="adm-tab">VPN MGMT</button>
             </div>
         </div>
         <div class="p-5 overflow-y-auto flex-1 pb-24">
             <div id="adm-pending" class="adm-content space-y-4"></div>
+
+            <div id="adm-history" class="adm-content hidden space-y-4"></div>
 
             <div id="adm-stock" class="adm-content hidden space-y-6">
                 <div class="card glow-border space-y-3">
@@ -901,72 +904,110 @@
 
             onValue(ref(db, 'orders'), (s) => {
                 const aP = document.getElementById('adm-pending');
+                const aH = document.getElementById('adm-history');
                 const uBox = document.getElementById('user-orders');
 
                 aP.innerHTML = '';
+                aH.innerHTML = '';
                 uBox.innerHTML = '';
 
                 let pCount = 0;
                 const d = s.val();
 
-                if (d) Object.keys(d).forEach(id => {
-                    const o = d[id];
+                if (d) {
+                    const orderEntries = Object.entries(d).sort((a, b) => {
+                        const aTime = new Date(a[1].actionDate || a[1].date || 0).getTime();
+                        const bTime = new Date(b[1].actionDate || b[1].date || 0).getTime();
+                        return bTime - aTime;
+                    });
 
-                    if (o.st === "Pending") {
-                        pCount++;
-                        aP.innerHTML += `
-                            <div class="card glow-border space-y-3">
-                                <div class="flex justify-between gap-3">
-                                    <b>${o.user}</b>
-                                    <span class="text-[10px] font-bold text-indigo-600">${o.method}: ${o.trx}</span>
-                                </div>
-                                <p class="text-[10px] text-slate-400">${o.vpn} (${o.plan}) - ${o.date || ''}</p>
-                                <div class="flex gap-2">
-                                    <button onclick="showStockList('${id}','${o.vpn_id}')" class="btn-p py-3 text-[10px]">Deliver</button>
-                                    <button onclick="rejectOrder('${id}')" class="btn-reject">Reject</button>
-                                </div>
-                            </div>`;
-                    }
-
-                    if (o.uid == UID) {
-                        let stColor = o.st === "Approved"
-                            ? "background:rgba(19,212,143,.12); color:#4bf3bb;"
-                            : (o.st === "Rejected"
-                                ? "background:rgba(255,93,115,.12); color:#ff98a7;"
-                                : "background:rgba(37,99,255,.14); color:#8cb8ff;");
-
-                        uBox.innerHTML += `
-                            <div class="card glow-border space-y-2">
-                                <div class="flex justify-between items-start gap-3">
-                                    <div>
-                                        <b class="text-sm">${o.vpn}</b>
-                                        <p class="text-[9px] text-slate-400 mt-1">${o.date || ''}</p>
+                    orderEntries.forEach(([id, o]) => {
+                        if (o.st === "Pending") {
+                            pCount++;
+                            aP.innerHTML += `
+                                <div class="card glow-border space-y-3">
+                                    <div class="flex justify-between gap-3">
+                                        <b>${o.user}</b>
+                                        <span class="text-[10px] font-bold text-indigo-600">${o.method}: ${o.trx}</span>
                                     </div>
-                                    <span class="text-[10px] font-bold px-2 py-1 rounded" style="${stColor}">${o.st}</span>
-                                </div>
+                                    <p class="text-[10px] text-slate-400">${o.vpn} (${o.plan}) - ${o.date || ''}</p>
+                                    <div class="flex gap-2">
+                                        <button onclick="showStockList('${id}','${o.vpn_id}')" class="btn-p py-3 text-[10px]">Deliver</button>
+                                        <button onclick="rejectOrder('${id}')" class="btn-reject">Reject</button>
+                                    </div>
+                                </div>`;
+                        }
 
-                                ${o.email ? `
-                                <div class="mt-3 space-y-2">
-                                    <div class="acc-box" onclick="copyText('${o.email}')">
-                                        <div class="flex flex-col">
-                                            <span class="acc-label">Email / ID</span>
-                                            <span class="acc-value">${o.email}</span>
+                        if (o.st === "Approved" || o.st === "Rejected") {
+                            const historyColor = o.st === "Approved"
+                                ? "background:rgba(19,212,143,.12); color:#4bf3bb;"
+                                : "background:rgba(255,93,115,.12); color:#ff98a7;";
+
+                            aH.innerHTML += `
+                                <div class="card glow-border space-y-3">
+                                    <div class="flex justify-between items-start gap-3">
+                                        <div>
+                                            <b class="text-sm">${o.user}</b>
+                                            <p class="text-[9px] text-slate-400 mt-1">UID: ${o.uid || '-'} • ${o.vpn} (${o.plan})</p>
                                         </div>
-                                        <i class="fa-regular fa-copy text-indigo-400 text-xs"></i>
+                                        <span class="text-[10px] font-bold px-2 py-1 rounded" style="${historyColor}">${o.st}</span>
                                     </div>
-                                    <div class="acc-box" onclick="copyText('${o.pass}')">
-                                        <div class="flex flex-col">
-                                            <span class="acc-label">Password</span>
-                                            <span class="acc-value">${o.pass}</span>
-                                        </div>
-                                        <i class="fa-regular fa-copy text-indigo-400 text-xs"></i>
-                                    </div>
-                                </div>` : ''}
 
-                                ${o.st === "Rejected" ? `<p class="text-[9px] text-rose-500 font-bold italic mt-2">Order was rejected by admin.</p>` : ''}
-                            </div>`;
-                    }
-                });
+                                    <div class="grid grid-cols-1 gap-2 text-[10px]">
+                                        <div class="acc-box"><div class="flex flex-col"><span class="acc-label">Order Time</span><span class="acc-value">${o.date || '-'}</span></div></div>
+                                        <div class="acc-box"><div class="flex flex-col"><span class="acc-label">Payment</span><span class="acc-value">${o.method || '-'} / ${o.trx || '-'}</span></div></div>
+                                        <div class="acc-box"><div class="flex flex-col"><span class="acc-label">Action Time</span><span class="acc-value">${o.actionDate || o.date || '-'}</span></div></div>
+                                        ${o.email ? `<div class="acc-box"><div class="flex flex-col"><span class="acc-label">Delivered Email / ID</span><span class="acc-value">${o.email}</span></div></div>` : ''}
+                                        ${o.pass ? `<div class="acc-box"><div class="flex flex-col"><span class="acc-label">Delivered Password</span><span class="acc-value">${o.pass}</span></div></div>` : ''}
+                                        ${o.actionBy ? `<div class="acc-box"><div class="flex flex-col"><span class="acc-label">Handled By</span><span class="acc-value">${o.actionBy}</span></div></div>` : ''}
+                                    </div>
+                                </div>`;
+                        }
+
+                        if (o.uid == UID) {
+                            let stColor = o.st === "Approved"
+                                ? "background:rgba(19,212,143,.12); color:#4bf3bb;"
+                                : (o.st === "Rejected"
+                                    ? "background:rgba(255,93,115,.12); color:#ff98a7;"
+                                    : "background:rgba(37,99,255,.14); color:#8cb8ff;");
+
+                            uBox.innerHTML += `
+                                <div class="card glow-border space-y-2">
+                                    <div class="flex justify-between items-start gap-3">
+                                        <div>
+                                            <b class="text-sm">${o.vpn}</b>
+                                            <p class="text-[9px] text-slate-400 mt-1">${o.date || ''}</p>
+                                        </div>
+                                        <span class="text-[10px] font-bold px-2 py-1 rounded" style="${stColor}">${o.st}</span>
+                                    </div>
+
+                                    ${o.email ? `
+                                    <div class="mt-3 space-y-2">
+                                        <div class="acc-box" onclick="copyText('${o.email}')">
+                                            <div class="flex flex-col">
+                                                <span class="acc-label">Email / ID</span>
+                                                <span class="acc-value">${o.email}</span>
+                                            </div>
+                                            <i class="fa-regular fa-copy text-indigo-400 text-xs"></i>
+                                        </div>
+                                        <div class="acc-box" onclick="copyText('${o.pass}')">
+                                            <div class="flex flex-col">
+                                                <span class="acc-label">Password</span>
+                                                <span class="acc-value">${o.pass}</span>
+                                            </div>
+                                            <i class="fa-regular fa-copy text-indigo-400 text-xs"></i>
+                                        </div>
+                                    </div>` : ''}
+
+                                    ${o.st === "Rejected" ? `<p class="text-[9px] text-rose-500 font-bold italic mt-2">Order was rejected by admin.</p>` : ''}
+                                </div>`;
+                        }
+                    });
+                }
+
+                if (!aH.innerHTML) {
+                    aH.innerHTML = `<div class="card text-center py-8 text-slate-400">No history found yet.</div>`;
+                }
 
                 document.getElementById('p-count').innerText = pCount;
 
@@ -1016,14 +1057,33 @@
             document.getElementById(pageId + '-page').classList.remove('hidden');
         };
 
-       window.rejectOrder = (id) => {
-    update(ref(db, `orders/${id}`), { st: "Rejected" }).then(() => Swal.fire({
-        title: 'Rejected!',
-        icon: 'success',
-        background: '#0b1120',
-        color: '#e5eefc'
-    }));
-};
+        window.rejectOrder = (id) => {
+            Swal.fire({
+                title: 'Reject Order?',
+                text: 'User will see this order as rejected.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ff2b5b',
+                background: '#0b1120',
+                color: '#e5eefc',
+                confirmButtonText: 'Yes, Reject'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const now = new Date();
+                    const actionDate = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    update(ref(db, `orders/${id}`), {
+                        st: "Rejected",
+                        actionDate,
+                        actionBy: `Admin ${UNAME} (${UID})`
+                    }).then(() => Swal.fire({
+                        title:'Rejected!',
+                        icon:'success',
+                        background:'#0b1120',
+                        color:'#e5eefc'
+                    }));
+                }
+            });
+        };
 
         window.saveV = (id) => update(ref(db, `vpns/${id}`), {
             p1n: document.getElementById(`p1n-${id}`).value,
@@ -1170,10 +1230,15 @@
 
         window.approveSelected = async (orderId, vpnId, stockKey) => {
             const snap = await get(ref(db, `vpns/${vpnId}/stock/${stockKey}`));
+            const now = new Date();
+            const actionDate = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
             update(ref(db, `orders/${orderId}`), {
                 st: "Approved",
                 email: snap.val().email,
-                pass: snap.val().pass
+                pass: snap.val().pass,
+                actionDate,
+                actionBy: `Admin ${UNAME} (${UID})`
             }).then(() => {
                 remove(ref(db, `vpns/${vpnId}/stock/${stockKey}`));
                 document.getElementById('stock-select-modal').style.display = 'none';
