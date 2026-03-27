@@ -824,29 +824,48 @@
             }, 1100);
         };
 
-        async function clearHistory() {
+        window.clearHistory = async () => {
+            const clearBtn = document.querySelector('[onclick="clearHistory()"]');
             const ok = confirm("Are you sure you want to clear all approved and rejected history?");
             if (!ok) return;
 
-            const snap = await get(ref(db, 'orders'));
-            const data = snap.val();
-            if (!data) {
-                alert('No history found.');
-                return;
+            try {
+                if (clearBtn) {
+                    clearBtn.disabled = true;
+                    clearBtn.dataset.originalText = clearBtn.innerHTML;
+                    clearBtn.innerHTML = 'Clearing...';
+                }
+
+                const snap = await get(ref(db, 'orders'));
+                const data = snap.val();
+
+                if (!data) {
+                    alert('No history found.');
+                    return;
+                }
+
+                const idsToDelete = Object.keys(data).filter(id => {
+                    const status = data[id]?.st;
+                    return status === 'Approved' || status === 'Rejected';
+                });
+
+                if (!idsToDelete.length) {
+                    alert('No history found.');
+                    return;
+                }
+
+                await Promise.all(idsToDelete.map(id => remove(ref(db, `orders/${id}`))));
+                alert('History cleared successfully.');
+            } catch (error) {
+                console.error('Failed to clear history:', error);
+                alert('Failed to clear history. Please try again.');
+            } finally {
+                if (clearBtn) {
+                    clearBtn.disabled = false;
+                    clearBtn.innerHTML = clearBtn.dataset.originalText || 'Clear History';
+                }
             }
-
-            const jobs = Object.keys(data)
-                .filter(id => data[id].st === 'Approved' || data[id].st === 'Rejected')
-                .map(id => remove(ref(db, `orders/${id}`)));
-
-            if (!jobs.length) {
-                alert('No history found.');
-                return;
-            }
-
-            await Promise.all(jobs);
-            alert('History cleared successfully.');
-        }
+        };
 
         function getVpnLogo(vName) {
             const domain = vName.toLowerCase().replace(/\s/g, '') + ".com";
