@@ -721,7 +721,7 @@
 
             <div id="adm-history" class="adm-content hidden space-y-4">
                 <div class="flex justify-end">
-                    <button onclick="clearHistory()" class="btn-reject py-3 text-[10px]">Clear History</button>
+                    <button onclick="clearHistory()" class="btn-reject py-3 text-[10px]">Clear Admin History</button>
                 </div>
                 <div id="adm-history-list" class="space-y-4"></div>
             </div>
@@ -826,7 +826,7 @@
 
         window.clearHistory = async () => {
             const clearBtn = document.querySelector('[onclick="clearHistory()"]');
-            const ok = confirm("Are you sure you want to clear all approved and rejected history?");
+            const ok = confirm("Are you sure you want to clear admin history? User order history will remain visible to users.");
             if (!ok) return;
 
             try {
@@ -844,21 +844,29 @@
                     return;
                 }
 
-                const idsToDelete = Object.keys(data).filter(id => {
-                    const status = data[id]?.st;
-                    return status === 'Approved' || status === 'Rejected';
+                const idsToHide = Object.keys(data).filter(id => {
+                    const order = data[id] || {};
+                    const status = order.st;
+                    return (status === 'Approved' || status === 'Rejected') && !order.adminHidden;
                 });
 
-                if (!idsToDelete.length) {
+                if (!idsToHide.length) {
                     alert('No history found.');
                     return;
                 }
 
-                await Promise.all(idsToDelete.map(id => remove(ref(db, `orders/${id}`))));
-                alert('History cleared successfully.');
+                await Promise.all(
+                    idsToHide.map(id => update(ref(db, `orders/${id}`), {
+                        adminHidden: true,
+                        adminHiddenAt: new Date().toISOString(),
+                        adminHiddenBy: `Admin ${UNAME} (${UID})`
+                    }))
+                );
+
+                alert('Admin history cleared successfully. User order history is unchanged.');
             } catch (error) {
-                console.error('Failed to clear history:', error);
-                alert('Failed to clear history. Please try again.');
+                console.error('Failed to clear admin history:', error);
+                alert('Failed to clear admin history. Please try again.');
             } finally {
                 if (clearBtn) {
                     clearBtn.disabled = false;
@@ -986,7 +994,7 @@
                                 </div>`;
                         }
 
-                        if (o.st === "Approved" || o.st === "Rejected") {
+                        if ((o.st === "Approved" || o.st === "Rejected") && !o.adminHidden) {
                             const historyColor = o.st === "Approved"
                                 ? "background:rgba(19,212,143,.12); color:#4bf3bb;"
                                 : "background:rgba(255,93,115,.12); color:#ff98a7;";
@@ -1054,7 +1062,7 @@
                 }
 
                 if (!aH.innerHTML) {
-                    aH.innerHTML = `<div class="card text-center py-8 text-slate-400">No history found yet.</div>`;
+                    aH.innerHTML = `<div class="card text-center py-8 text-slate-400">No admin history found yet.</div>`;
                 }
 
                 document.getElementById('p-count').innerText = pCount;
@@ -1122,7 +1130,10 @@
                     update(ref(db, `orders/${id}`), {
                         st: "Rejected",
                         actionDate,
-                        actionBy: `Admin ${UNAME} (${UID})`
+                        actionBy: `Admin ${UNAME} (${UID})`,
+                        adminHidden: false,
+                        adminHiddenAt: null,
+                        adminHiddenBy: null
                     }).then(() => Swal.fire({
                         title:'Rejected!',
                         icon:'success',
@@ -1286,7 +1297,10 @@
                 email: snap.val().email,
                 pass: snap.val().pass,
                 actionDate,
-                actionBy: `Admin ${UNAME} (${UID})`
+                actionBy: `Admin ${UNAME} (${UID})`,
+                adminHidden: false,
+                adminHiddenAt: null,
+                adminHiddenBy: null
             }).then(() => {
                 remove(ref(db, `vpns/${vpnId}/stock/${stockKey}`));
                 document.getElementById('stock-select-modal').style.display = 'none';
