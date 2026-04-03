@@ -1435,7 +1435,7 @@ apiKey: "AIzaSyDMPXsRLChUaHlpIRHwm6PH4uYxR21stO4",
             const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
             const nick = d.nickname || d.username || d.user || 'Unknown';
             const tag = '@' + (d.username || d.user || 'guest');
-            const avatar = d.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(nick)}&background=1e40af&color=ffffff&bold=true`;
+            const avatar = 'https://i.ibb.co/hTfnz7w/photo-6158730640451375188-c.jpg';
             html += `
               <div class="simple-card glass leader-card">
                 <div class="leader-card-main">
@@ -1443,7 +1443,7 @@ apiKey: "AIzaSyDMPXsRLChUaHlpIRHwm6PH4uYxR21stO4",
                   <img class="leader-avatar" src="${avatar}" alt="${nick}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(nick)}&background=1e40af&color=ffffff&bold=true'">
                   <div class="leader-meta">
                     <b>${nick}</b>
-                    <small class="muted">${tag}</small>
+                    
                   </div>
                 </div>
                 <b style="color:#fca5a5;">${formatMoney(d.totalAmount)}</b>
